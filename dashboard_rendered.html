@@ -1,0 +1,233 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPSC AI Mentor - Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+</head>
+<body>
+<div class="app-layout">
+    <!-- Sidebar -->
+                <div class="sidebar">
+    <div class="sidebar-header">
+        <h1 class="sidebar-title">UPSC Mentor</h1>
+        <button type="button" class="sidebar-toggle" id="sidebarToggleBtn" aria-label="Toggle sidebar">
+            <span id="sidebarToggleIcon">&#9776;</span>
+        </button>
+    </div>
+    <nav class="sidebar-nav">
+        <a href="/dashboard" class="nav-item  active">
+            <span class="nav-icon">D</span>
+            <span class="nav-label">Dashboard</span>
+        </a>
+        <a href="/chat" class="nav-item">
+            <span class="nav-icon">C</span>
+            <span class="nav-label">AI Tutor Chat</span>
+        </a>
+        <a href="/quiz" class="nav-item">
+            <span class="nav-icon">Q</span>
+            <span class="nav-label">Quiz Practice</span>
+        </a>
+        <a href="/answer-practice" class="nav-item">
+            <span class="nav-icon">A</span>
+            <span class="nav-label">Answer Writing</span>
+        </a>
+        <a href="/study-plan" class="nav-item">
+            <span class="nav-icon">S</span>
+            <span class="nav-label">Study Plan</span>
+        </a>
+    </nav>
+    <script>
+        (function () {
+            const key = 'upscSidebarCollapsed';
+            const body = document.body;
+            const btn = document.getElementById('sidebarToggleBtn');
+            const icon = document.getElementById('sidebarToggleIcon');
+            if (!btn || !body) return;
+
+            const applyState = (collapsed) => {
+                body.classList.toggle('sidebar-collapsed', collapsed);
+                if (icon) icon.textContent = collapsed ? '>' : '<';
+            };
+
+            const saved = localStorage.getItem(key) === 'true';
+            applyState(saved);
+
+            btn.addEventListener('click', () => {
+                const nextState = !body.classList.contains('sidebar-collapsed');
+                localStorage.setItem(key, String(nextState));
+                applyState(nextState);
+            });
+        })();
+    </script>
+</div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Welcome Banner -->
+        <div class="welcome-banner" id="welcomeBanner">
+            <div class="welcome-text">
+                <h1 id="welcomeMsg">Welcome back! 🎯</h1>
+                <p id="welcomeSubtext">Your UPSC preparation dashboard</p>
+            </div>
+            <div class="welcome-stats">
+                <div class="mini-stat">
+                    <span class="mini-stat-value" id="targetYearStat">2025</span>
+                    <span class="mini-stat-label">Target</span>
+                </div>
+                <div class="mini-stat">
+                    <span class="mini-stat-value" id="levelStat">-</span>
+                    <span class="mini-stat-label">Level</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-card-icon">💬</div>
+                <div class="stat-card-data">
+                    <span class="stat-card-value" id="totalSessions">0</span>
+                    <span class="stat-card-label">Chat Sessions</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon">❓</div>
+                <div class="stat-card-data">
+                    <span class="stat-card-value" id="totalQuizzes">0</span>
+                    <span class="stat-card-label">Quizzes Taken</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon">📊</div>
+                <div class="stat-card-data">
+                    <span class="stat-card-value" id="avgScore">0%</span>
+                    <span class="stat-card-label">Average Score</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon">📚</div>
+                <div class="stat-card-data">
+                    <span class="stat-card-value" id="optionalSubjectStat">-</span>
+                    <span class="stat-card-label">Optional Subject</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="section-header">
+            <h2>🚀 Quick Actions</h2>
+        </div>
+        <div class="quick-actions-grid">
+            <a href="/chat?subject=POLITY" class="action-card">
+                <span class="action-icon">🏛️</span>
+                <span class="action-title">Study Polity</span>
+                <span class="action-desc">Chat with AI about Constitution & Governance</span>
+            </a>
+            <a href="/chat?subject=ECONOMY" class="action-card">
+                <span class="action-icon">💰</span>
+                <span class="action-title">Study Economy</span>
+                <span class="action-desc">Learn Indian Economy with AI tutor</span>
+            </a>
+            <a href="/chat?subject=HISTORY_MODERN" class="action-card">
+                <span class="action-icon">📜</span>
+                <span class="action-title">Study History</span>
+                <span class="action-desc">Explore Modern Indian History</span>
+            </a>
+            <a href="/chat?optional=true" class="action-card highlight">
+                <span class="action-icon">🎯</span>
+                <span class="action-title" id="optionalAction">Study Optional</span>
+                <span class="action-desc">Dedicated tutoring for your optional</span>
+            </a>
+            <a href="/answer-practice" class="action-card">
+                <span class="action-icon">📝</span>
+                <span class="action-title">Practice Answer Writing</span>
+                <span class="action-desc">Write and get AI evaluation</span>
+            </a>
+            <a href="/quiz" class="action-card">
+                <span class="action-icon">❓</span>
+                <span class="action-title">Take a Quiz</span>
+                <span class="action-desc">Test your knowledge with MCQs</span>
+            </a>
+            <a href="/study-plan" class="action-card">
+                <span class="action-icon">📅</span>
+                <span class="action-title">Get Study Plan</span>
+                <span class="action-desc">AI-generated personalized schedule</span>
+            </a>
+            <a href="/chat?subject=CURRENT_AFFAIRS" class="action-card">
+                <span class="action-icon">📰</span>
+                <span class="action-title">Current Affairs</span>
+                <span class="action-desc">Discuss current events for UPSC</span>
+            </a>
+        </div>
+
+        <!-- Subject-wise Progress -->
+        <div class="section-header">
+            <h2>📊 Subject-wise Progress</h2>
+        </div>
+        <div class="progress-grid" id="subjectProgress">
+            <!-- Dynamically filled by JavaScript -->
+            <div class="progress-placeholder">
+                <p>Take quizzes to see your subject-wise progress here!</p>
+            </div>
+        </div>
+
+        <!-- AI Analysis -->
+        <div class="section-header">
+            <h2>🤖 AI Progress Analysis</h2>
+            <button class="btn-secondary btn-small" onclick="getAiAnalysis()">
+                Generate Analysis
+            </button>
+        </div>
+        <div class="analysis-card" id="aiAnalysis">
+            <p class="analysis-placeholder">
+                Click "Generate Analysis" to get AI-powered insights on your preparation.
+            </p>
+        </div>
+    </main>
+</div>
+<footer class="app-footer">
+    <div class="footer-content">
+        <div class="footer-left">
+            <span class="footer-logo">UPSC AI Mentor</span>
+            <span class="footer-version">v1.0.0</span>
+        </div>
+        <div class="footer-center">
+            <p class="footer-disclaimer">
+                AI-generated content is for guidance only. Always verify with standard UPSC books and official UPSC notifications.
+            </p>
+        </div>
+        <div class="footer-right">
+            <div class="footer-links">
+                <a href="https://github.com/yourusername/upsc-ai-mentor" target="_blank" class="footer-link">GitHub</a>
+                <a href="https://upsc.gov.in" target="_blank" class="footer-link">UPSC Official</a>
+            </div>
+            <p class="footer-credit">Built with Spring Boot + AI</p>
+        </div>
+    </div>
+
+    <div class="footer-resources">
+        <span class="resource-label">Recommended:</span>
+        <div class="resource-tags">
+            <span class="resource-tag">The Hindu</span>
+            <span class="resource-tag">Indian Express</span>
+            <span class="resource-tag">Yojana Magazine</span>
+            <span class="resource-tag">Kurukshetra</span>
+            <span class="resource-tag">PIB</span>
+            <span class="resource-tag">PRS Legislative</span>
+            <span class="resource-tag">Economic Survey</span>
+        </div>
+    </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="/js/app.js"></script>
+<script>
+    // Load dashboard data on page load
+    document.addEventListener('DOMContentLoaded', loadDashboard);
+</script>
+</body>
+</html>
+

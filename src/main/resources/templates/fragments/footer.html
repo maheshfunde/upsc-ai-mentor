@@ -1,0 +1,99 @@
+﻿<footer th:fragment="footer" class="app-footer">
+    <div class="footer-content">
+        <div class="footer-left">
+            <span class="footer-logo">UPSC AI Mentor</span>
+            <span class="footer-version">v1.0.0</span>
+        </div>
+        <div class="footer-center">
+            <p class="footer-disclaimer">
+                AI-generated content is for guidance only. Always verify with standard UPSC books and official UPSC notifications.
+            </p>
+        </div>
+        <div class="footer-right">
+            <div class="footer-links">
+                <a href="https://github.com/yourusername/upsc-ai-mentor" target="_blank" class="footer-link">GitHub</a>
+                <a href="https://upsc.gov.in" target="_blank" class="footer-link">UPSC Official</a>
+            </div>
+            <p class="footer-credit">Built with Spring Boot + AI</p>
+        </div>
+    </div>
+
+    <div class="footer-resources">
+        <span class="resource-label">Recommended:</span>
+        <div class="resource-tags">
+            <span class="resource-tag">The Hindu</span>
+            <span class="resource-tag">Indian Express</span>
+            <span class="resource-tag">Yojana Magazine</span>
+            <span class="resource-tag">Kurukshetra</span>
+            <span class="resource-tag">PIB</span>
+            <span class="resource-tag">PRS Legislative</span>
+            <span class="resource-tag">Economic Survey</span>
+        </div>
+    </div>
+</footer>
+<style>
+    .app-footer {
+        background: #1e293b;
+        border-top: 1px solid #334155;
+        margin-top: 24px;
+    }
+    .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        padding: 16px 24px;
+    }
+    .footer-logo {
+        font-weight: 700;
+    }
+    .footer-version {
+        margin-left: 8px;
+        padding: 2px 8px;
+        border-radius: 10px;
+        background: rgba(99, 102, 241, 0.2);
+        color: #a5b4fc;
+        font-size: 12px;
+    }
+    .footer-disclaimer,
+    .footer-credit,
+    .footer-link,
+    .resource-label,
+    .resource-tag {
+        color: #94a3b8;
+    }
+    .footer-links {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+    }
+    .footer-link {
+        text-decoration: none;
+    }
+    .footer-link:hover {
+        color: #818cf8;
+    }
+    .footer-resources {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 24px 14px;
+        border-top: 1px solid #334155;
+        background: rgba(99, 102, 241, 0.08);
+        flex-wrap: wrap;
+    }
+    .resource-tags {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    .resource-tag {
+        border: 1px solid #334155;
+        border-radius: 12px;
+        padding: 4px 10px;
+        font-size: 12px;
+        background: #0f172a;
+    }
+</style>
+

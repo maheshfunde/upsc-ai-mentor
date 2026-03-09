@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPSC AI Mentor - Current Affairs Analysis</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/sidebar :: sidebar(activeItem='currentaffairs')}"></div>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1>Current Affairs Analysis</h1>
+            <p>Paste a news article or editorial and get UPSC-focused structured analysis.</p>
+        </div>
+
+        <div class="plan-section">
+            <h2>Input</h2>
+            <div class="form-group">
+                <label for="caContent">Article / Editorial Content</label>
+                <textarea id="caContent" rows="14" placeholder="Paste full content here..."></textarea>
+            </div>
+            <button class="btn-primary" onclick="analyzeCurrentAffairs()">Analyze for UPSC</button>
+        </div>
+
+        <div class="plan-section" id="caLoading" style="display:none;">
+            <div class="loading-spinner"></div>
+            <p class="text-center">Analyzing content...</p>
+        </div>
+
+        <div class="plan-section" id="caOutputSection" style="display:none;">
+            <h2>AI Analysis</h2>
+            <div class="plan-content" id="caOutput"></div>
+        </div>
+    </main>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:src="@{/js/current-affairs.js}"></script>
+</body>
+</html>

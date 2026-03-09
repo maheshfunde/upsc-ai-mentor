@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPSC AI Mentor - Study Plan</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+<div class="app-layout">
+    <!-- Sidebar -->
+                <div th:replace="~{fragments/sidebar :: sidebar(activeItem='studyplan')}"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1>📅 AI-Generated Study Plan</h1>
+            <p>Get personalized study schedules based on your profile</p>
+        </div>
+
+        <div class="study-plan-container">
+            <!-- Plan Actions -->
+            <div class="plan-section">
+                <h2>🎯 Generate Your Plan</h2>
+                <div class="plan-actions">
+                    <button class="plan-action-btn" onclick="generateFullPlan()">
+                        <span class="plan-action-icon">📋</span>
+                        <div>
+                            <span class="plan-action-text">Complete Study Plan</span>
+                            <span class="text-secondary" style="font-size:0.8rem; display:block;">
+                                    Phase-wise breakdown with timelines
+                                </span>
+                        </div>
+                    </button>
+                    <button class="plan-action-btn" onclick="generateDailySchedule()">
+                        <span class="plan-action-icon">⏰</span>
+                        <div>
+                            <span class="plan-action-text">Daily Timetable</span>
+                            <span class="text-secondary" style="font-size:0.8rem; display:block;">
+                                    Hour-by-hour schedule for today
+                                </span>
+                        </div>
+                    </button>
+                    <button class="plan-action-btn" onclick="generateWeeklyPlan()">
+                        <span class="plan-action-icon">📆</span>
+                        <div>
+                            <span class="plan-action-text">Weekly Revision Plan</span>
+                            <span class="text-secondary" style="font-size:0.8rem; display:block;">
+                                    Day-wise revision schedule
+                                </span>
+                        </div>
+                    </button>
+                    <button class="plan-action-btn" onclick="generateProgressAnalysis()">
+                        <span class="plan-action-icon">📊</span>
+                        <div>
+                            <span class="plan-action-text">Progress Analysis</span>
+                            <span class="text-secondary" style="font-size:0.8rem; display:block;">
+                                    AI analysis of your preparation
+                                </span>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Focus Subject Selector for Daily Schedule -->
+                <div class="form-group" id="focusSubjectGroup" style="display:none;">
+                    <label>Focus Subject for Today</label>
+                    <select id="focusSubject">
+                        <option value="General Studies">General Studies (Mix)</option>
+                        <option value="Polity">Polity & Governance</option>
+                        <option value="History">History</option>
+                        <option value="Geography">Geography</option>
+                        <option value="Economy">Economy</option>
+                        <option value="Environment">Environment & Ecology</option>
+                        <option value="Science & Technology">Science & Technology</option>
+                        <option value="Ethics">Ethics</option>
+                        <option value="Essay">Essay Writing</option>
+                        <option value="Current Affairs">Current Affairs</option>
+                        <option value="Optional Subject">Optional Subject</option>
+                    </select>
+                    <button class="btn-primary mt-20" onclick="fetchDailySchedule()">
+                        Generate Daily Schedule
+                    </button>
+                </div>
+            </div>
+
+            <!-- Plan Output -->
+            <div class="plan-section" id="planOutput" style="display:none;">
+                <h2 id="planTitle">📋 Your Study Plan</h2>
+                <div class="plan-content" id="planContent">
+                    <!-- AI-generated plan content -->
+                </div>
+            </div>
+
+            <!-- Loading -->
+            <div class="plan-section" id="planLoading" style="display:none;">
+                <div class="loading-spinner"></div>
+                <p class="text-center" id="planLoadingText">
+                    Generating your personalized study plan...
+                </p>
+            </div>
+        </div>
+    </main>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script>
+    // Get user data
+    const user = JSON.parse(localStorage.getItem('upscMentorUser'));
+    if (!user) window.location.href = '/onboarding';
+
+    function showLoading(text) {
+        document.getElementById('planOutput').style.display = 'none';
+        document.getElementById('focusSubjectGroup').style.display = 'none';
+        document.getElementById('planLoading').style.display = 'block';
+        document.getElementById('planLoadingText').textContent = text;
+    }
+
+    function showPlan(title, content) {
+        document.getElementById('planLoading').style.display = 'none';
+        document.getElementById('planTitle').textContent = title;
+        document.getElementById('planContent').innerHTML = marked.parse(content);
+        document.getElementById('planOutput').style.display = 'block';
+        document.getElementById('planOutput').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function generateFullPlan() {
+        showLoading('Creating your complete study plan... This may take a minute.');
+        try {
+            const response = await fetch(`/api/study-plan/generate/${user.id}`);
+            const data = await response.json();
+            if (data.success) {
+                showPlan('📋 Your Complete UPSC Study Plan', data.plan);
+            } else {
+                alert('Could not generate plan. Please try again.');
+                document.getElementById('planLoading').style.display = 'none';
+            }
+        } catch (error) {
+            alert('Connection error. Make sure the server is running.');
+            document.getElementById('planLoading').style.display = 'none';
+        }
+    }
+
+    function generateDailySchedule() {
+        document.getElementById('focusSubjectGroup').style.display = 'block';
+        document.getElementById('focusSubjectGroup').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function fetchDailySchedule() {
+        const focus = document.getElementById('focusSubject').value;
+        showLoading('Creating your daily timetable...');
+        try {
+            const response = await fetch(
+                `/api/study-plan/daily/${user.id}?focusSubject=${encodeURIComponent(focus)}`
+            );
+            const data = await response.json();
+            if (data.success) {
+                showPlan('⏰ Your Daily Timetable', data.schedule);
+            } else {
+                alert('Could not generate schedule. Please try again.');
+                document.getElementById('planLoading').style.display = 'none';
+            }
+        } catch (error) {
+            alert('Connection error.');
+            document.getElementById('planLoading').style.display = 'none';
+        }
+    }
+
+    async function generateWeeklyPlan() {
+        showLoading('Creating your weekly revision plan...');
+        try {
+            const response = await fetch(`/api/study-plan/weekly/${user.id}`);
+            const data = await response.json();
+            if (data.success) {
+                showPlan('📆 Your Weekly Revision Plan', data.plan);
+            } else {
+                alert('Could not generate plan. Please try again.');
+                document.getElementById('planLoading').style.display = 'none';
+            }
+        } catch (error) {
+            alert('Connection error.');
+            document.getElementById('planLoading').style.display = 'none';
+        }
+    }
+
+    async function generateProgressAnalysis() {
+        showLoading('AI is analyzing your progress...');
+        try {
+            const response = await fetch(`/api/study-plan/analysis/${user.id}`);
+            const data = await response.json();
+            if (data.success) {
+                showPlan('📊 AI Progress Analysis', data.analysis);
+            } else {
+                alert('Could not generate analysis. Please try again.');
+                document.getElementById('planLoading').style.display = 'none';
+            }
+        } catch (error) {
+            alert('Connection error.');
+            document.getElementById('planLoading').style.display = 'none';
+        }
+    }
+</script>
+</body>
+</html>

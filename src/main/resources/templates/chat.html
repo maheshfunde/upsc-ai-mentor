@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPSC AI Mentor - AI Tutor Chat</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+</head>
+<body>
+<div class="app-layout">
+    <!-- Sidebar -->
+                <div th:replace="~{fragments/sidebar :: sidebar(activeItem='chat')}"></div>
+
+    <!-- Main Chat Area -->
+    <main class="chat-main">
+        <!-- Chat Header -->
+        <div class="chat-header">
+            <div class="chat-header-info">
+                <h2 id="chatSubjectTitle">🤖 UPSC AI Mentor</h2>
+                <span class="chat-subject-badge" id="chatSubjectBadge">General</span>
+            </div>
+            <div class="chat-header-actions">
+                <select id="oldChatsSelect" class="old-chats-select">
+                    <option value="">Old chats</option>
+                </select>
+                <button class="btn-secondary btn-small" onclick="loadSelectedOldChat()">
+                    Open
+                </button>
+                <button class="btn-secondary btn-small" onclick="newChat()">
+                    + New Chat
+                </button>
+            </div>
+        </div>
+
+        <!-- Messages -->
+        <div class="chat-messages" id="chatMessages">
+            <div class="welcome-message">
+                <div class="welcome-icon">🎓</div>
+                <h2>Welcome to UPSC AI Tutor!</h2>
+                <p>Select a subject from the sidebar and start asking questions.
+                    I'll help you prepare for UPSC with detailed explanations,
+                    examples, and exam tips.</p>
+
+                <div class="quick-actions">
+                    <button class="quick-btn"
+                            onclick="sendQuickMessage('Explain Fundamental Rights under Indian Constitution')">
+                        Fundamental Rights
+                    </button>
+                    <button class="quick-btn"
+                            onclick="sendQuickMessage('What are the important topics in Indian Economy for UPSC Prelims?')">
+                        Economy Topics
+                    </button>
+                    <button class="quick-btn"
+                            onclick="sendQuickMessage('Explain the concept of federalism in India')">
+                        Indian Federalism
+                    </button>
+                    <button class="quick-btn"
+                            onclick="sendQuickMessage('Give me a study strategy for my optional subject')">
+                        Optional Strategy
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="chat-input-area">
+            <div class="input-container">
+                    <textarea id="messageInput"
+                              placeholder="Ask your UPSC-related question..."
+                              rows="1" autofocus></textarea>
+                <button id="sendBtn" class="send-btn" onclick="sendChatMessage()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+            <p class="disclaimer">
+                UPSC AI Mentor provides guidance based on AI.
+                Always verify with standard UPSC books and official sources.
+            </p>
+        </div>
+    </main>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script th:src="@{/js/chat.js(v='20260309-2')}"></script>
+</body>
+</html>
+
+

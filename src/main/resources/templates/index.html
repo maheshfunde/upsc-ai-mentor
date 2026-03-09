@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPSC AI Mentor - Your Personal UPSC Tutor</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+</head>
+<body>
+<div class="landing-page">
+    <!-- Hero Section -->
+    <header class="hero">
+        <nav class="navbar">
+            <div class="logo">🎓 UPSC AI Mentor</div>
+            <div class="nav-links">
+                <a href="/onboarding" class="btn-primary">Start Preparing →</a>
+            </div>
+        </nav>
+
+        <div class="hero-content">
+            <div class="hero-badge">🤖 AI-Powered UPSC Preparation</div>
+            <h1>Your Personal <span class="gradient-text">AI Mentor</span> for UPSC</h1>
+            <p class="hero-subtitle">
+                Get subject-wise tutoring, answer evaluation, quiz practice,
+                and personalized study plans — all powered by AI.
+                Covers Prelims, Mains & all 48 Optional Subjects.
+            </p>
+            <div class="hero-actions">
+                <a href="/onboarding" class="btn-primary btn-large">
+                    🚀 Begin Your Journey
+                </a>
+                <a href="#features" class="btn-secondary btn-large">
+                    Learn More ↓
+                </a>
+            </div>
+
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">20+</span>
+                    <span class="stat-label">GS Subjects</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">48</span>
+                    <span class="stat-label">Optional Subjects</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">AI Availability</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Free</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <h2>Everything You Need for UPSC</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <h3>AI Subject Tutor</h3>
+                <p>Chat with AI experts for every UPSC subject.
+                    Get detailed explanations with UPSC-relevant examples.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📝</div>
+                <h3>Answer Writing Practice</h3>
+                <p>Practice Mains answers and get AI evaluation with scores,
+                    feedback, and model answers.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">❓</div>
+                <h3>MCQ Quiz Practice</h3>
+                <p>AI-generated Prelims-style MCQs with detailed explanations
+                    and PYQ analysis.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📅</div>
+                <h3>Personalized Study Plan</h3>
+                <p>AI creates daily, weekly, and monthly study schedules
+                    tailored to your profile.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Progress Tracking</h3>
+                <p>Track your performance across subjects with
+                    AI-powered analysis and recommendations.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3>Optional Subject Support</h3>
+                <p>All 48 optional subjects supported with dedicated
+                    AI tutoring and resources.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- UPSC Subjects Section -->
+    <section class="subjects-section">
+        <h2>Comprehensive Subject Coverage</h2>
+        <div class="subjects-grid">
+            <div class="subject-tag">🏛️ Polity & Governance</div>
+            <div class="subject-tag">📜 History (Ancient, Medieval, Modern)</div>
+            <div class="subject-tag">🌍 Geography</div>
+            <div class="subject-tag">💰 Indian Economy</div>
+            <div class="subject-tag">🔬 Science & Technology</div>
+            <div class="subject-tag">🌿 Environment & Ecology</div>
+            <div class="subject-tag">⚖️ Ethics & Integrity</div>
+            <div class="subject-tag">✍️ Essay Writing</div>
+            <div class="subject-tag">📰 Current Affairs</div>
+            <div class="subject-tag">🧮 CSAT Aptitude</div>
+            <div class="subject-tag">🎨 Art & Culture</div>
+            <div class="subject-tag">🎯 Your Optional Subject</div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Ready to Crack UPSC?</h2>
+        <p>Start your AI-powered preparation journey today.</p>
+        <a href="/onboarding" class="btn-primary btn-large">
+            🎓 Get Started - It's Free!
+        </a>
+    </section>
+
+    <footer class="footer">
+        <p>Built with ❤️ using Spring Boot + AI |
+            <a href="https://github.com/yourusername/upsc-ai-mentor">GitHub</a></p>
+    </footer>
+</div>
+</body>
+</html>

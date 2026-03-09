@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPSC AI Mentor - Quiz Practice</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+<div class="app-layout">
+    <!-- Sidebar -->
+                <div th:replace="~{fragments/sidebar :: sidebar(activeItem='quiz')}"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Quiz Setup -->
+        <div class="page-header">
+            <h1>❓ Quiz Practice</h1>
+            <p>AI-generated UPSC-style MCQs with detailed explanations</p>
+        </div>
+
+        <!-- Quiz Configuration -->
+        <div class="quiz-section" id="quizSetup">
+            <h2>⚙️ Configure Your Quiz</h2>
+            <div class="quiz-config-grid">
+                <div class="form-group">
+                    <label>Subject</label>
+                    <select id="quizSubject">
+                        <option value="POLITY">🏛️ Polity & Governance</option>
+                        <option value="HISTORY_MODERN">📜 Modern History</option>
+                        <option value="HISTORY_ANCIENT">🏺 Ancient History</option>
+                        <option value="HISTORY_MEDIEVAL">🕌 Medieval History</option>
+                        <option value="GEOGRAPHY_INDIAN">🗺️ Indian Geography</option>
+                        <option value="GEOGRAPHY_PHYSICAL">🌍 Physical Geography</option>
+                        <option value="ECONOMY">💰 Indian Economy</option>
+                        <option value="ENVIRONMENT">🌿 Environment & Ecology</option>
+                        <option value="SCIENCE_TECH">🔬 Science & Technology</option>
+                        <option value="CURRENT_AFFAIRS">📰 Current Affairs</option>
+                        <option value="HISTORY_ART_CULTURE">🎨 Art & Culture</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Specific Topic (optional)</label>
+                    <input type="text" id="quizTopic"
+                           placeholder="e.g., Fundamental Rights, Mughal Empire">
+                </div>
+                <div class="form-group">
+                    <label>Number of Questions</label>
+                    <select id="quizCount">
+                        <option value="5" selected>5 Questions</option>
+                        <option value="10">10 Questions</option>
+                        <option value="15">15 Questions</option>
+                        <option value="20">20 Questions</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Difficulty</label>
+                    <select id="quizDifficulty">
+                        <option value="BEGINNER">🟢 Beginner</option>
+                        <option value="INTERMEDIATE" selected>🟡 Intermediate</option>
+                        <option value="ADVANCED">🟠 Advanced</option>
+                        <option value="EXPERT">🔴 UPSC Level</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="isOptionalQuiz">
+                        Use Optional Subject
+                    </label>
+                </div>
+            </div>
+            <button class="btn-primary btn-large" onclick="startQuiz()">
+                🚀 Start Quiz
+            </button>
+        </div>
+
+        <!-- Quiz Questions -->
+        <div class="quiz-section" id="quizArea" style="display:none;">
+            <div class="quiz-progress">
+                <div class="quiz-progress-bar">
+                    <div class="quiz-progress-fill" id="quizProgressFill"></div>
+                </div>
+                <span class="quiz-progress-text" id="quizProgressText">
+                        Question 1 / 5
+                    </span>
+            </div>
+
+            <div class="question-container" id="questionContainer">
+                <!-- Questions dynamically loaded here -->
+            </div>
+
+            <div class="quiz-nav">
+                <button class="btn-secondary" id="prevQuestionBtn"
+                        onclick="prevQuestion()" disabled>← Previous</button>
+                <button class="btn-primary" id="nextQuestionBtn"
+                        onclick="nextQuestion()">Next →</button>
+                <button class="btn-primary" id="submitQuizBtn"
+                        onclick="submitQuiz()" style="display:none;">
+                    📊 Submit Quiz
+                </button>
+            </div>
+        </div>
+
+        <!-- Quiz Results -->
+        <div class="quiz-section" id="quizResults" style="display:none;">
+            <div class="results-header">
+                <h2>📊 Quiz Results</h2>
+                <div class="results-score">
+                    <span class="results-score-value" id="finalScore">0/0</span>
+                    <span class="results-score-percentage" id="finalPercentage">0%</span>
+                </div>
+            </div>
+
+            <div class="results-feedback" id="quizFeedback">
+                <!-- AI feedback loaded here -->
+            </div>
+
+            <div class="results-review" id="quizReview">
+                <!-- Question-by-question review -->
+            </div>
+
+            <div class="results-actions">
+                <button class="btn-primary" onclick="retakeQuiz()">🔄 Take Another Quiz</button>
+                <a href="/dashboard" class="btn-secondary">📊 Back to Dashboard</a>
+            </div>
+        </div>
+
+        <!-- Loading -->
+        <div class="quiz-section" id="quizLoading" style="display:none;">
+            <div class="loading-spinner"></div>
+            <p>Generating quiz questions... This may take a moment.</p>
+        </div>
+    </main>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:src="@{/js/quiz.js}"></script>
+</body>
+</html>

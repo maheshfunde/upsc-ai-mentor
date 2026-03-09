@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPSC AI Mentor - AI Settings</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/sidebar :: sidebar(activeItem='aisettings')}"></div>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1>AI Settings</h1>
+            <p>Configure online API key/model or switch back to local LLM.</p>
+        </div>
+
+        <div class="plan-section">
+            <h2>Model Configuration</h2>
+            <p class="analysis-placeholder" id="llmStatusText">
+                Current mode: Local Ollama model
+            </p>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="onlineModelInput">Online model name (optional)</label>
+                    <input type="text" id="onlineModelInput" placeholder="e.g. llama-3.3-70b-versatile">
+                </div>
+                <div class="form-group">
+                    <label for="apiKeyInput">Online API key (OpenAI or Groq)</label>
+                    <input type="password" id="apiKeyInput" placeholder="sk-... or gsk_...">
+                </div>
+            </div>
+            <div class="form-nav">
+                <button class="btn-primary" onclick="saveLlmConfig()">Save API Key</button>
+                <button class="btn-secondary" onclick="clearLlmConfig()">Use Local LLM</button>
+            </div>
+            <span class="field-hint" id="llmConfigHint"></span>
+        </div>
+    </main>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:src="@{/js/ai-settings.js}"></script>
+</body>
+</html>

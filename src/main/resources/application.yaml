@@ -1,0 +1,53 @@
+﻿server:
+  port: 8080
+
+spring:
+  application:
+    name: upsc-ai-mentor
+
+  # H2 Database Configuration (free, embedded)
+  datasource:
+    url: jdbc:h2:file:./data/upscmentor
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  thymeleaf:
+    cache: false
+
+# AI Configuration
+ai:
+  ollama:
+    base-url: http://localhost:11434
+    model-name: llama3:8b
+    temperature: 0.7
+    timeout: 180
+  online:
+    default-model: gpt-4o-mini
+    openai:
+      base-url: https://api.openai.com/v1
+    groq:
+      base-url: https://api.groq.com/openai/v1
+      default-model: llama-3.3-70b-versatile
+    temperature: 0.7
+    timeout: 180
+
+# UPSC Specific Configuration
+upsc:
+  max-answer-words: 250
+  mains-answer-words: 150
+  essay-word-limit: 1200
+

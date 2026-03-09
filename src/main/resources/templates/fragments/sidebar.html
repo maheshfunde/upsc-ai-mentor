@@ -1,0 +1,74 @@
+<div th:fragment="sidebar(activeItem)" class="sidebar">
+    <div class="sidebar-header">
+        <h1 class="sidebar-title">UPSC Mentor</h1>
+        <button type="button" class="sidebar-toggle" id="sidebarToggleBtn" aria-label="Toggle sidebar">
+            <span id="sidebarToggleIcon">&#9776;</span>
+        </button>
+    </div>
+    <nav class="sidebar-nav">
+        <a href="/dashboard" class="nav-item"
+           th:classappend="${activeItem == 'dashboard'} ? ' active' : ''">
+            <span class="nav-icon">&#128202;</span>
+            <span class="nav-label">Dashboard</span>
+        </a>
+        <a href="/chat" class="nav-item"
+           th:classappend="${activeItem == 'chat'} ? ' active' : ''">
+            <span class="nav-icon">&#128172;</span>
+            <span class="nav-label">AI Tutor Chat</span>
+        </a>
+        <a href="/quiz" class="nav-item"
+           th:classappend="${activeItem == 'quiz'} ? ' active' : ''">
+            <span class="nav-icon">&#10067;</span>
+            <span class="nav-label">Quiz Practice</span>
+        </a>
+        <a href="/answer-practice" class="nav-item"
+           th:classappend="${activeItem == 'answer'} ? ' active' : ''">
+            <span class="nav-icon">&#9997;</span>
+            <span class="nav-label">Answer Writing</span>
+        </a>
+        <a href="/study-plan" class="nav-item"
+           th:classappend="${activeItem == 'studyplan'} ? ' active' : ''">
+            <span class="nav-icon">&#128197;</span>
+            <span class="nav-label">Study Plan</span>
+        </a>
+        <a href="/current-affairs" class="nav-item"
+           th:classappend="${activeItem == 'currentaffairs'} ? ' active' : ''">
+            <span class="nav-icon">&#128240;</span>
+            <span class="nav-label">Current Affairs</span>
+        </a>
+        <a href="/pyq-analysis" class="nav-item"
+           th:classappend="${activeItem == 'pyq'} ? ' active' : ''">
+            <span class="nav-icon">&#128218;</span>
+            <span class="nav-label">PYQ Analysis</span>
+        </a>
+        <a href="/ai-settings" class="nav-item"
+           th:classappend="${activeItem == 'aisettings'} ? ' active' : ''">
+            <span class="nav-icon">&#9881;</span>
+            <span class="nav-label">AI Settings</span>
+        </a>
+    </nav>
+    <script>
+        (function () {
+            const key = 'upscSidebarCollapsed';
+            const body = document.body;
+            const btn = document.getElementById('sidebarToggleBtn');
+            const icon = document.getElementById('sidebarToggleIcon');
+            if (!btn || !body) return;
+            body.classList.add('has-sidebar');
+
+            const applyState = (collapsed) => {
+                body.classList.toggle('sidebar-collapsed', collapsed);
+                if (icon) icon.textContent = collapsed ? '>' : '<';
+            };
+
+            const saved = localStorage.getItem(key) === 'true';
+            applyState(saved);
+
+            btn.addEventListener('click', () => {
+                const nextState = !body.classList.contains('sidebar-collapsed');
+                localStorage.setItem(key, String(nextState));
+                applyState(nextState);
+            });
+        })();
+    </script>
+</div>

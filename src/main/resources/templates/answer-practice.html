@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPSC AI Mentor - Answer Writing Practice</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+<div class="app-layout">
+    <!-- Sidebar (same as dashboard) -->
+                <div th:replace="~{fragments/sidebar :: sidebar(activeItem='answer')}"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1>📝 Answer Writing Practice</h1>
+            <p>Practice Mains-style answers and get AI evaluation</p>
+        </div>
+
+        <div class="answer-practice-container">
+            <!-- Question Generator -->
+            <div class="practice-section">
+                <h2>📋 Get a Practice Question</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Subject</label>
+                        <select id="answerSubject">
+                            <option value="POLITY">Polity & Governance</option>
+                            <option value="HISTORY_MODERN">Modern History</option>
+                            <option value="GEOGRAPHY_INDIAN">Indian Geography</option>
+                            <option value="ECONOMY">Indian Economy</option>
+                            <option value="ENVIRONMENT">Environment & Ecology</option>
+                            <option value="SCIENCE_TECH">Science & Technology</option>
+                            <option value="GS4">Ethics (GS Paper IV)</option>
+                            <option value="ESSAY">Essay</option>
+                            <option value="GS1">GS Paper I</option>
+                            <option value="GS2">GS Paper II</option>
+                            <option value="GS3">GS Paper III</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Word Limit</label>
+                        <select id="wordLimit">
+                            <option value="150">150 words (10 marks)</option>
+                            <option value="250" selected>250 words (15 marks)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="isOptionalAnswer">
+                            Use Optional Subject
+                        </label>
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="generateQuestion()">
+                    🎯 Generate Question
+                </button>
+            </div>
+
+            <!-- Question Display -->
+            <div class="practice-section" id="questionSection" style="display:none;">
+                <h2>📌 Question</h2>
+                <div class="question-card" id="questionDisplay">
+                    <!-- Question loaded here -->
+                </div>
+            </div>
+
+            <!-- Answer Writing Area -->
+            <div class="practice-section" id="answerSection" style="display:none;">
+                <h2>✍️ Write Your Answer</h2>
+                <div class="answer-writing-area">
+                        <textarea id="userAnswer" rows="15"
+                                  placeholder="Write your answer here...
+
+Tips:
+• Start with an introduction that addresses the question directly
+• Use bullet points for key arguments
+• Include relevant facts, data, and examples
+• Cover multiple dimensions (social, economic, political)
+• End with a balanced conclusion
+• Stay within the word limit"></textarea>
+                    <div class="word-counter">
+                        <span id="wordCount">0</span> / <span id="targetWords">250</span> words
+                    </div>
+                </div>
+                <button class="btn-primary btn-large" onclick="submitAnswer()">
+                    📊 Evaluate My Answer
+                </button>
+            </div>
+
+            <!-- Evaluation Results -->
+            <div class="practice-section" id="evaluationSection" style="display:none;">
+                <h2>📊 AI Evaluation Report</h2>
+
+                <!-- Score Cards -->
+                <div class="score-grid">
+                    <div class="score-card overall">
+                        <span class="score-label">Overall</span>
+                        <span class="score-value" id="overallScore">-</span>
+                        <span class="score-max">/10</span>
+                    </div>
+                    <div class="score-card">
+                        <span class="score-label">Content</span>
+                        <span class="score-value" id="contentScore">-</span>
+                        <span class="score-max">/10</span>
+                    </div>
+                    <div class="score-card">
+                        <span class="score-label">Structure</span>
+                        <span class="score-value" id="structureScore">-</span>
+                        <span class="score-max">/10</span>
+                    </div>
+                    <div class="score-card">
+                        <span class="score-label">Analysis</span>
+                        <span class="score-value" id="analyticalScore">-</span>
+                        <span class="score-max">/10</span>
+                    </div>
+                </div>
+
+                <!-- Detailed Feedback -->
+                <div class="feedback-grid">
+                    <div class="feedback-card strengths">
+                        <h3>✅ Strengths</h3>
+                        <div id="strengthsFeedback"></div>
+                    </div>
+                    <div class="feedback-card weaknesses">
+                        <h3>⚠️ Areas for Improvement</h3>
+                        <div id="weaknessesFeedback"></div>
+                    </div>
+                    <div class="feedback-card suggestions">
+                        <h3>💡 Suggestions</h3>
+                        <div id="suggestionsFeedback"></div>
+                    </div>
+                    <div class="feedback-card missed">
+                        <h3>🔍 Dimensions Missed</h3>
+                        <div id="missedFeedback"></div>
+                    </div>
+                </div>
+
+                <!-- Model Answer -->
+                <div class="model-answer-section">
+                    <h3>📝 Model Answer</h3>
+                    <div class="model-answer-content" id="modelAnswer"></div>
+                </div>
+
+                <button class="btn-primary" onclick="resetPractice()">
+                    🔄 Practice Another Question
+                </button>
+            </div>
+
+            <!-- Loading -->
+            <div class="practice-section" id="loadingSection" style="display:none;">
+                <div class="loading-spinner"></div>
+                <p id="loadingText">Generating question...</p>
+            </div>
+        </div>
+    </main>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:src="@{/js/answer-practice.js}"></script>
+</body>
+</html>

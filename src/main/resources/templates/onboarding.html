@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPSC AI Mentor - Setup Your Profile</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+</head>
+<body>
+<div class="onboarding-container">
+    <div class="onboarding-card">
+        <div class="onboarding-header">
+            <h1>🎓 Welcome to UPSC AI Mentor</h1>
+            <p>Let's set up your profile for a personalized experience</p>
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="steps-indicator">
+            <div class="step active" id="step1-indicator">
+                <span class="step-number">1</span>
+                <span class="step-label">Basic Info</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step" id="step2-indicator">
+                <span class="step-number">2</span>
+                <span class="step-label">Optional Subject</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step" id="step3-indicator">
+                <span class="step-number">3</span>
+                <span class="step-label">Study Details</span>
+            </div>
+        </div>
+
+        <!-- Step 1: Basic Info -->
+        <div class="existing-user-login">
+    <p>Already registered? Enter your username to continue.</p>
+    <div class="inline-input-row">
+        <input type="text" id="existingUsername" placeholder="Enter existing username">
+        <button type="button" class="btn-secondary" onclick="loginWithExistingUsername()">
+            Continue
+        </button>
+    </div>
+    <span class="field-hint" id="existingUserHint"></span>
+</div>
+<div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" placeholder="Enter your name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Choose a username" required>
+                <span class="field-hint" id="usernameHint"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="targetYear">Target UPSC Year</label>
+                <select id="targetYear">
+                    <option value="2025">UPSC 2025</option>
+                    <option value="2026">UPSC 2026</option>
+                    <option value="2027">UPSC 2027</option>
+                    <option value="2028">UPSC 2028</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="attemptNumber">Which Attempt?</label>
+                <select id="attemptNumber">
+                    <option value="1">1st Attempt (Fresh)</option>
+                    <option value="2">2nd Attempt</option>
+                    <option value="3">3rd Attempt</option>
+                    <option value="4">4th Attempt</option>
+                    <option value="5">5th+ Attempt</option>
+                </select>
+            </div>
+
+            <button class="btn-primary btn-full" onclick="nextStep(2)">
+                Next → Choose Optional Subject
+            </button>
+        </div>
+
+        <!-- Step 2: Optional Subject Selection -->
+        <div class="form-step" id="step2">
+            <h2>📚 Choose Your Optional Subject</h2>
+            <p class="step-description">
+                This is one of the most important decisions in UPSC preparation.
+                Your AI mentor will provide dedicated tutoring for this subject.
+            </p>
+
+            <!-- Search/Filter -->
+            <div class="form-group">
+                <input type="text" id="optionalSearch"
+                       placeholder="🔍 Search optional subjects..."
+                       oninput="filterOptionalSubjects()">
+            </div>
+
+            <!-- Optional Subject Categories -->
+            <div class="optional-categories">
+                <button class="category-btn active"
+                        onclick="showCategory('all')">All</button>
+                <button class="category-btn"
+                        onclick="showCategory('popular')">🔥 Popular</button>
+                <button class="category-btn"
+                        onclick="showCategory('humanities')">📖 Humanities</button>
+                <button class="category-btn"
+                        onclick="showCategory('science')">🔬 Science</button>
+                <button class="category-btn"
+                        onclick="showCategory('engineering')">⚙️ Engineering</button>
+                <button class="category-btn"
+                        onclick="showCategory('literature')">📝 Literature</button>
+            </div>
+
+            <!-- Subject Grid -->
+            <div class="optional-grid" id="optionalGrid">
+                <!-- Popular choices -->
+                <div class="optional-card" data-value="POLITICAL_SCIENCE"
+                     data-category="popular humanities" onclick="selectOptional(this)">
+                    <span class="optional-icon">🏛️</span>
+                    <span class="optional-name">Political Science & IR</span>
+                    <span class="optional-badge popular">Most Popular</span>
+                </div>
+                <div class="optional-card" data-value="SOCIOLOGY"
+                     data-category="popular humanities" onclick="selectOptional(this)">
+                    <span class="optional-icon">👥</span>
+                    <span class="optional-name">Sociology</span>
+                    <span class="optional-badge popular">Popular</span>
+                </div>
+                <div class="optional-card" data-value="PUBLIC_ADMINISTRATION"
+                     data-category="popular humanities" onclick="selectOptional(this)">
+                    <span class="optional-icon">🏢</span>
+                    <span class="optional-name">Public Administration</span>
+                    <span class="optional-badge popular">Popular</span>
+                </div>
+                <div class="optional-card" data-value="GEOGRAPHY"
+                     data-category="popular humanities" onclick="selectOptional(this)">
+                    <span class="optional-icon">🌍</span>
+                    <span class="optional-name">Geography</span>
+                    <span class="optional-badge popular">Popular</span>
+                </div>
+                <div class="optional-card" data-value="HISTORY"
+                     data-category="popular humanities" onclick="selectOptional(this)">
+                    <span class="optional-icon">📜</span>
+                    <span class="optional-name">History</span>
+                    <span class="optional-badge popular">Popular</span>
+                </div>
+                <div class="optional-card" data-value="ANTHROPOLOGY"
+                     data-category="popular humanities" onclick="selectOptional(this)">
+                    <span class="optional-icon">🦴</span>
+                    <span class="optional-name">Anthropology</span>
+                    <span class="optional-badge popular">Popular</span>
+                </div>
+                <div class="optional-card" data-value="PHILOSOPHY"
+                     data-category="humanities" onclick="selectOptional(this)">
+                    <span class="optional-icon">🤔</span>
+                    <span class="optional-name">Philosophy</span>
+                </div>
+                <div class="optional-card" data-value="ECONOMICS"
+                     data-category="popular humanities" onclick="selectOptional(this)">
+                    <span class="optional-icon">💰</span>
+                    <span class="optional-name">Economics</span>
+                </div>
+                <div class="optional-card" data-value="PSYCHOLOGY"
+                     data-category="humanities science" onclick="selectOptional(this)">
+                    <span class="optional-icon">🧠</span>
+                    <span class="optional-name">Psychology</span>
+                </div>
+                <div class="optional-card" data-value="LAW"
+                     data-category="humanities" onclick="selectOptional(this)">
+                    <span class="optional-icon">⚖️</span>
+                    <span class="optional-name">Law</span>
+                </div>
+                <div class="optional-card" data-value="COMMERCE"
+                     data-category="humanities" onclick="selectOptional(this)">
+                    <span class="optional-icon">📊</span>
+                    <span class="optional-name">Commerce & Accountancy</span>
+                </div>
+                <div class="optional-card" data-value="MANAGEMENT"
+                     data-category="humanities" onclick="selectOptional(this)">
+                    <span class="optional-icon">📈</span>
+                    <span class="optional-name">Management</span>
+                </div>
+
+                <!-- Science -->
+                <div class="optional-card" data-value="MATHEMATICS"
+                     data-category="science" onclick="selectOptional(this)">
+                    <span class="optional-icon">🧮</span>
+                    <span class="optional-name">Mathematics</span>
+                </div>
+                <div class="optional-card" data-value="PHYSICS"
+                     data-category="science" onclick="selectOptional(this)">
+                    <span class="optional-icon">⚛️</span>
+                    <span class="optional-name">Physics</span>
+                </div>
+                <div class="optional-card" data-value="CHEMISTRY"
+                     data-category="science" onclick="selectOptional(this)">
+                    <span class="optional-icon">🧪</span>
+                    <span class="optional-name">Chemistry</span>
+                </div>
+                <div class="optional-card" data-value="BOTANY"
+                     data-category="science" onclick="selectOptional(this)">
+                    <span class="optional-icon">🌱</span>
+                    <span class="optional-name">Botany</span>
+                </div>
+                <div class="optional-card" data-value="ZOOLOGY"
+                     data-category="science" onclick="selectOptional(this)">
+                    <span class="optional-icon">🦁</span>
+                    <span class="optional-name">Zoology</span>
+                </div>
+                <div class="optional-card" data-value="STATISTICS"
+                     data-category="science" onclick="selectOptional(this)">
+                    <span class="optional-icon">📉</span>
+                    <span class="optional-name">Statistics</span>
+                </div>
+                <div class="optional-card" data-value="GEOLOGY"
+                     data-category="science" onclick="selectOptional(this)">
+                    <span class="optional-icon">🪨</span>
+                    <span class="optional-name">Geology</span>
+                </div>
+                <div class="optional-card" data-value="AGRICULTURE"
+                     data-category="science" onclick="selectOptional(this)">
+                    <span class="optional-icon">🌾</span>
+                    <span class="optional-name">Agriculture</span>
+                </div>
+                <div class="optional-card" data-value="ANIMAL_HUSBANDRY"
+                     data-category="science" onclick="selectOptional(this)">
+                    <span class="optional-icon">🐄</span>
+                    <span class="optional-name">Animal Husbandry & Vet Science</span>
+                </div>
+                <div class="optional-card" data-value="MEDICAL_SCIENCE"
+                     data-category="science" onclick="selectOptional(this)">
+                    <span class="optional-icon">🏥</span>
+                    <span class="optional-name">Medical Science</span>
+                </div>
+
+                <!-- Engineering -->
+                <div class="optional-card" data-value="CIVIL_ENGINEERING"
+                     data-category="engineering" onclick="selectOptional(this)">
+                    <span class="optional-icon">🏗️</span>
+                    <span class="optional-name">Civil Engineering</span>
+                </div>
+                <div class="optional-card" data-value="MECHANICAL_ENGINEERING"
+                     data-category="engineering" onclick="selectOptional(this)">
+                    <span class="optional-icon">⚙️</span>
+                    <span class="optional-name">Mechanical Engineering</span>
+                </div>
+                <div class="optional-card" data-value="ELECTRICAL_ENGINEERING"
+                     data-category="engineering" onclick="selectOptional(this)">
+                    <span class="optional-icon">⚡</span>
+                    <span class="optional-name">Electrical Engineering</span>
+                </div>
+
+                <!-- Literature -->
+                <div class="optional-card" data-value="ENGLISH_LIT"
+                     data-category="literature" onclick="selectOptional(this)">
+                    <span class="optional-icon">📖</span>
+                    <span class="optional-name">English Literature</span>
+                </div>
+                <div class="optional-card" data-value="HINDI_LIT"
+                     data-category="literature" onclick="selectOptional(this)">
+                    <span class="optional-icon">📖</span>
+                    <span class="optional-name">Hindi Literature</span>
+                </div>
+                <div class="optional-card" data-value="SANSKRIT_LIT"
+                     data-category="literature" onclick="selectOptional(this)">
+                    <span class="optional-icon">📖</span>
+                    <span class="optional-name">Sanskrit Literature</span>
+                </div>
+                <div class="optional-card" data-value="TAMIL_LIT"
+                     data-category="literature" onclick="selectOptional(this)">
+                    <span class="optional-icon">📖</span>
+                    <span class="optional-name">Tamil Literature</span>
+                </div>
+                <div class="optional-card" data-value="TELUGU_LIT"
+                     data-category="literature" onclick="selectOptional(this)">
+                    <span class="optional-icon">📖</span>
+                    <span class="optional-name">Telugu Literature</span>
+                </div>
+                <div class="optional-card" data-value="BENGALI_LIT"
+                     data-category="literature" onclick="selectOptional(this)">
+                    <span class="optional-icon">📖</span>
+                    <span class="optional-name">Bengali Literature</span>
+                </div>
+                <div class="optional-card" data-value="KANNADA_LIT"
+                     data-category="literature" onclick="selectOptional(this)">
+                    <span class="optional-icon">📖</span>
+                    <span class="optional-name">Kannada Literature</span>
+                </div>
+                <div class="optional-card" data-value="MALAYALAM_LIT"
+                     data-category="literature" onclick="selectOptional(this)">
+                    <span class="optional-icon">📖</span>
+                    <span class="optional-name">Malayalam Literature</span>
+                </div>
+                <div class="optional-card" data-value="MARATHI_LIT"
+                     data-category="literature" onclick="selectOptional(this)">
+                    <span class="optional-icon">📖</span>
+                    <span class="optional-name">Marathi Literature</span>
+                </div>
+                <div class="optional-card" data-value="GUJARATI_LIT"
+                     data-category="literature" onclick="selectOptional(this)">
+                    <span class="optional-icon">📖</span>
+                    <span class="optional-name">Gujarati Literature</span>
+                </div>
+                <div class="optional-card" data-value="PUNJABI_LIT"
+                     data-category="literature" onclick="selectOptional(this)">
+                    <span class="optional-icon">📖</span>
+                    <span class="optional-name">Punjabi Literature</span>
+                </div>
+                <div class="optional-card" data-value="URDU_LIT"
+                     data-category="literature" onclick="selectOptional(this)">
+                    <span class="optional-icon">📖</span>
+                    <span class="optional-name">Urdu Literature</span>
+                </div>
+                <div class="optional-card" data-value="ODIA_LIT"
+                     data-category="literature" onclick="selectOptional(this)">
+                    <span class="optional-icon">📖</span>
+                    <span class="optional-name">Odia Literature</span>
+                </div>
+                <div class="optional-card" data-value="ASSAMESE_LIT"
+                     data-category="literature" onclick="selectOptional(this)">
+                    <span class="optional-icon">📖</span>
+                    <span class="optional-name">Assamese Literature</span>
+                </div>
+                <div class="optional-card" data-value="MANIPURI_LIT"
+                     data-category="literature" onclick="selectOptional(this)">
+                    <span class="optional-icon">📖</span>
+                    <span class="optional-name">Manipuri Literature</span>
+                </div>
+            </div>
+
+            <input type="hidden" id="selectedOptional" value="">
+
+            <div class="form-nav">
+                <button class="btn-secondary" onclick="prevStep(1)">← Back</button>
+                <button class="btn-primary" onclick="nextStep(3)" id="step2Next" disabled>
+                    Next → Study Details
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 3: Study Details -->
+        <div class="form-step" id="step3">
+            <h2>📊 Your Study Profile</h2>
+
+            <div class="form-group">
+                <label for="difficultyLevel">Current Preparation Level</label>
+                <select id="difficultyLevel">
+                    <option value="BEGINNER">🟢 Beginner - Just Starting UPSC Prep</option>
+                    <option value="INTERMEDIATE">🟡 Intermediate - Covered Basic Syllabus</option>
+                    <option value="ADVANCED">🟠 Advanced - Revision & Deep Practice</option>
+                    <option value="EXPERT">🔴 Expert - Final Revision & Mock Tests</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="dailyHours">Daily Study Hours Available</label>
+                <input type="range" id="dailyHours" min="1" max="16" value="8"
+                       oninput="updateHoursLabel(this.value)">
+                <span class="range-label" id="hoursLabel">8 hours/day</span>
+            </div>
+
+            <div class="form-group">
+                <label>Weak Subjects (select all that apply)</label>
+                <div class="checkbox-grid">
+                    <label class="checkbox-card">
+                        <input type="checkbox" name="weakSubject" value="History"> History
+                    </label>
+                    <label class="checkbox-card">
+                        <input type="checkbox" name="weakSubject" value="Geography"> Geography
+                    </label>
+                    <label class="checkbox-card">
+                        <input type="checkbox" name="weakSubject" value="Polity"> Polity
+                    </label>
+                    <label class="checkbox-card">
+                        <input type="checkbox" name="weakSubject" value="Economy"> Economy
+                    </label>
+                    <label class="checkbox-card">
+                        <input type="checkbox" name="weakSubject" value="Science"> Science & Tech
+                    </label>
+                    <label class="checkbox-card">
+                        <input type="checkbox" name="weakSubject" value="Environment"> Environment
+                    </label>
+                    <label class="checkbox-card">
+                        <input type="checkbox" name="weakSubject" value="Ethics"> Ethics
+                    </label>
+                    <label class="checkbox-card">
+                        <input type="checkbox" name="weakSubject" value="Essay"> Essay
+                    </label>
+                    <label class="checkbox-card">
+                        <input type="checkbox" name="weakSubject" value="CSAT"> CSAT
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Strong Subjects (select all that apply)</label>
+                <div class="checkbox-grid">
+                    <label class="checkbox-card">
+                        <input type="checkbox" name="strongSubject" value="History"> History
+                    </label>
+                    <label class="checkbox-card">
+                        <input type="checkbox" name="strongSubject" value="Geography"> Geography
+                    </label>
+                    <label class="checkbox-card">
+                        <input type="checkbox" name="strongSubject" value="Polity"> Polity
+                    </label>
+                    <label class="checkbox-card">
+                        <input type="checkbox" name="strongSubject" value="Economy"> Economy
+                    </label>
+                    <label class="checkbox-card">
+                        <input type="checkbox" name="strongSubject" value="Science"> Science & Tech
+                    </label>
+                    <label class="checkbox-card">
+                        <input type="checkbox" name="strongSubject" value="Environment"> Environment
+                    </label>
+                    <label class="checkbox-card">
+                        <input type="checkbox" name="strongSubject" value="Ethics"> Ethics
+                    </label>
+                    <label class="checkbox-card">
+                        <input type="checkbox" name="strongSubject" value="Essay"> Essay
+                    </label>
+                    <label class="checkbox-card">
+                        <input type="checkbox" name="strongSubject" value="CSAT"> CSAT
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-nav">
+                <button class="btn-secondary" onclick="prevStep(2)">← Back</button>
+                <button class="btn-primary btn-large" onclick="submitProfile()">
+                    🎓 Start My UPSC Journey!
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div class="form-step" id="loadingStep" style="display:none; text-align:center;">
+            <div class="loading-spinner"></div>
+            <h2>Setting up your AI Mentor...</h2>
+            <p>Personalizing your experience based on your profile</p>
+        </div>
+    </div>
+</div>
+<!-- In any template file like dashboard.html, chat.html etc. -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>
+
+
