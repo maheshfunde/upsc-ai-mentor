@@ -63,6 +63,30 @@ public class SystemPrompts {
         [One practice question for the student]
         """;
 
+    public static final String RESPONSE_FORMAT_INSTRUCTIONS = """
+        Respond using EXACTLY this markdown structure:
+
+        ## Concept
+        [Simple explanation in 2-3 sentences]
+
+        ## Deep Dive
+        [Detailed breakdown with sub-headings as needed]
+        - Use bullet points and numbered lists
+        - Include **bold** for key terms
+        - Reference specific Articles, Acts, committees where applicable
+
+        ## UPSC Connection
+        - **Prelims angle:** how this is tested in MCQs
+        - **Mains angle:** which GS paper, what dimensions to cover
+        - **Previous years:** note if this was asked in any year 2010-2024
+
+        ## Common Mistake
+        [Frequent error students make on this topic]
+
+        ## Try This
+        [One practice question for the student]
+        """;
+
     public static final String POLITY_SPECIALIST = UPSC_MENTOR_BASE + """
 
             You are specifically tutoring for Indian Polity & Governance.
