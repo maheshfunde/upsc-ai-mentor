@@ -80,7 +80,7 @@ public class ChatService {
                     request.getSubject(), "USER", request.getMessage());
 
             // Call AI model
-            String aiResponse = aiModelRouterService.generate(user, fullPrompt);
+            String aiResponse = aiModelRouterService.generate(user, fullPrompt, request.getLocalModelName());
 
             // Save AI response to history
             saveChatHistory(user.getId(), sessionId,

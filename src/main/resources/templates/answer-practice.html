@@ -7,46 +7,50 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
           rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.4/dist/purify.min.js"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"
+            crossorigin="anonymous"></script>
 </head>
 <body>
 <div class="app-layout">
-    <!-- Sidebar (same as dashboard) -->
-                <div th:replace="~{fragments/sidebar :: sidebar(activeItem='answer')}"></div>
+    <div th:replace="~{fragments/sidebar :: sidebar(activeItem='answer')}"></div>
 
-    <!-- Main Content -->
     <main class="main-content">
         <div class="page-header">
             <h1>📝 Answer Writing Practice</h1>
-            <p>Practice Mains-style answers and get AI evaluation</p>
+            <p>Practice Mains-style answers and get AI evaluation with scores, feedback, and model answers</p>
         </div>
 
         <div class="answer-practice-container">
             <!-- Question Generator -->
             <div class="practice-section">
-                <h2>📋 Get a Practice Question</h2>
+                <h2>📋 Configure Your Practice</h2>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Subject</label>
+                        <label for="answerSubject">Subject</label>
                         <select id="answerSubject">
-                            <option value="POLITY">Polity & Governance</option>
-                            <option value="HISTORY_MODERN">Modern History</option>
-                            <option value="GEOGRAPHY_INDIAN">Indian Geography</option>
-                            <option value="ECONOMY">Indian Economy</option>
-                            <option value="ENVIRONMENT">Environment & Ecology</option>
-                            <option value="SCIENCE_TECH">Science & Technology</option>
-                            <option value="GS4">Ethics (GS Paper IV)</option>
-                            <option value="ESSAY">Essay</option>
-                            <option value="GS1">GS Paper I</option>
-                            <option value="GS2">GS Paper II</option>
-                            <option value="GS3">GS Paper III</option>
+                            <option value="POLITY">⚖️ Polity & Governance</option>
+                            <option value="HISTORY_MODERN">📜 Modern History</option>
+                            <option value="HISTORY_ANCIENT">🏺 Ancient History</option>
+                            <option value="HISTORY_MEDIEVAL">🕌 Medieval History</option>
+                            <option value="GEOGRAPHY_INDIAN">🗺️ Indian Geography</option>
+                            <option value="ECONOMY">💰 Indian Economy</option>
+                            <option value="ENVIRONMENT">🌿 Environment & Ecology</option>
+                            <option value="SCIENCE_TECH">🔬 Science & Technology</option>
+                            <option value="GS4">🧭 Ethics (GS Paper IV)</option>
+                            <option value="ESSAY">✍️ Essay</option>
+                            <option value="GS1">📚 GS Paper I</option>
+                            <option value="GS2">📚 GS Paper II</option>
+                            <option value="GS3">📚 GS Paper III</option>
+                            <option value="CURRENT_AFFAIRS">📰 Current Affairs</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Word Limit</label>
+                        <label for="wordLimit">Word Limit</label>
                         <select id="wordLimit">
-                            <option value="150">150 words (10 marks)</option>
-                            <option value="250" selected>250 words (15 marks)</option>
+                            <option value="150">150 words (10 marks, ~7 min)</option>
+                            <option value="250" selected>250 words (15 marks, ~11 min)</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -56,47 +60,67 @@
                         </label>
                     </div>
                 </div>
-                <button class="btn-primary" onclick="generateQuestion()">
-                    🎯 Generate Question
-                </button>
+                <div class="form-nav">
+                    <button class="btn-primary" onclick="generateQuestion()">🎯 Generate Question</button>
+                    <button class="btn-secondary" onclick="generateRandomQuestion()">🎲 Random Question</button>
+                </div>
             </div>
 
-            <!-- Question Display -->
+            <!-- Question Display with Timer -->
             <div class="practice-section" id="questionSection" style="display:none;">
-                <h2>📌 Question</h2>
-                <div class="question-card" id="questionDisplay">
-                    <!-- Question loaded here -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h2 style="margin-bottom: 0;">📌 Question</h2>
+                    <div class="timer-presets" id="timerPresets">
+                        <button class="timer-preset" onclick="setTimer(7)">⏱️ 7 min</button>
+                        <button class="timer-preset" onclick="setTimer(11)">⏱️ 11 min</button>
+                        <button class="timer-preset active" onclick="setTimer(0)">⏱️ Off</button>
+                    </div>
+                </div>
+
+                <div class="question-card" id="questionDisplay"></div>
+
+                <!-- Timer -->
+                <div class="timer-container" id="timerContainer" style="display:none;">
+                    <div class="timer-display" id="timerDisplay">00:00</div>
+                    <div class="timer-controls">
+                        <button class="timer-btn primary" id="timerStartBtn" onclick="startTimer()">▶️ Start</button>
+                        <button class="timer-btn" id="timerPauseBtn" onclick="pauseTimer()" style="display:none;">⏸️ Pause</button>
+                        <button class="timer-btn" onclick="resetTimer()">🔄 Reset</button>
+                    </div>
                 </div>
             </div>
 
             <!-- Answer Writing Area -->
             <div class="practice-section" id="answerSection" style="display:none;">
                 <h2>✍️ Write Your Answer</h2>
-                <div class="answer-writing-area">
-                        <textarea id="userAnswer" rows="15"
-                                  placeholder="Write your answer here...
-
-Tips:
-• Start with an introduction that addresses the question directly
-• Use bullet points for key arguments
-• Include relevant facts, data, and examples
-• Cover multiple dimensions (social, economic, political)
-• End with a balanced conclusion
-• Stay within the word limit"></textarea>
-                    <div class="word-counter">
-                        <span id="wordCount">0</span> / <span id="targetWords">250</span> words
-                    </div>
+                <div class="input-toolbar">
+                    <button onclick="insertTemplate('intro')" title="Add Introduction Template">📝 Introduction</button>
+                    <button onclick="insertTemplate('body')" title="Add Body Structure">📋 Body</button>
+                    <button onclick="insertTemplate('conclusion')" title="Add Conclusion Template">🎯 Conclusion</button>
+                    <button onclick="insertTemplate('points')" title="Add Bullet Points">• Bullet Points</button>
                 </div>
-                <button class="btn-primary btn-large" onclick="submitAnswer()">
-                    📊 Evaluate My Answer
-                </button>
+                <div class="answer-writing-area input-with-counter">
+                    <textarea id="userAnswer" rows="15"
+                              placeholder="Start writing your answer...
+
+Tips for a great answer:
+• Begin with a direct introduction addressing the question
+• Use headings and bullet points for clarity
+• Include relevant Articles, Acts, committees, data
+• Cover multiple dimensions (social, economic, political, ethical)
+• Give real-world examples and case studies
+• End with a forward-looking conclusion"></textarea>
+                    <div class="input-counter" id="wordCounter">0 / 250 words</div>
+                </div>
+                <div class="form-nav">
+                    <button class="btn-primary btn-large" onclick="submitAnswer()">📊 Evaluate My Answer</button>
+                </div>
             </div>
 
             <!-- Evaluation Results -->
             <div class="practice-section" id="evaluationSection" style="display:none;">
                 <h2>📊 AI Evaluation Report</h2>
 
-                <!-- Score Cards -->
                 <div class="score-grid">
                     <div class="score-card overall">
                         <span class="score-label">Overall</span>
@@ -120,7 +144,6 @@ Tips:
                     </div>
                 </div>
 
-                <!-- Detailed Feedback -->
                 <div class="feedback-grid">
                     <div class="feedback-card strengths">
                         <h3>✅ Strengths</h3>
@@ -140,18 +163,16 @@ Tips:
                     </div>
                 </div>
 
-                <!-- Model Answer -->
                 <div class="model-answer-section">
                     <h3>📝 Model Answer</h3>
                     <div class="model-answer-content" id="modelAnswer"></div>
                 </div>
 
-                <button class="btn-primary" onclick="resetPractice()">
-                    🔄 Practice Another Question
-                </button>
+                <div class="form-nav">
+                    <button class="btn-primary" onclick="resetPractice()">🔄 Practice Another</button>
+                </div>
             </div>
 
-            <!-- Loading -->
             <div class="practice-section" id="loadingSection" style="display:none;">
                 <div class="loading-spinner"></div>
                 <p id="loadingText">Generating question...</p>
@@ -160,6 +181,6 @@ Tips:
     </main>
 </div>
 <div th:replace="~{fragments/footer :: footer}"></div>
-<script th:src="@{/js/answer-practice.js}"></script>
+<script th:src="@{/js/answer-practice.js(v='20260608-v2')}"></script>
 </body>
 </html>

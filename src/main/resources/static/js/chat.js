@@ -145,6 +145,8 @@ async function sendChatMessage() {
     setInputEnabled(false);
 
     try {
+        const parsedInput = parseMessageModelOverride(message);
+
         if (!sessionId) {
             await createNewSession();
         }
@@ -153,11 +155,12 @@ async function sendChatMessage() {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
-                message,
+                message: parsedInput.message,
                 subject: currentSubject,
                 sessionId,
                 userId: currentUser.id,
-                optionalSubject: isOptionalMode
+                optionalSubject: isOptionalMode,
+                localModelName: parsedInput.localModelName
             })
         });
 
@@ -181,6 +184,27 @@ async function sendChatMessage() {
 
     setInputEnabled(true);
     messageInput.focus();
+}
+
+function parseMessageModelOverride(rawMessage) {
+    const lines = rawMessage.split(/\r?\n/);
+    if (lines.length === 0) {
+        return { message: rawMessage, localModelName: null };
+    }
+
+    const firstLine = lines[0].trim();
+    const match = firstLine.match(/^@model\s+([^\s]+)\s*$/i);
+    if (!match) {
+        return { message: rawMessage, localModelName: null };
+    }
+
+    const localModelName = match[1].trim();
+    const message = lines.slice(1).join("\n").trim();
+
+    return {
+        message: message || rawMessage,
+        localModelName
+    };
 }
 
 function sendQuickMessage(message) {

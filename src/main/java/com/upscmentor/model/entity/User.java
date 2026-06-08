@@ -50,6 +50,12 @@ public class User {
     @Column(name = "online_model_name")
     private String onlineModelName;
 
+    @Column(name = "online_base_url")
+    private String onlineBaseUrl;
+
+    @Column(name = "local_model_name")
+    private String localModelName;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -101,6 +107,12 @@ public class User {
 
     public String getOnlineModelName() { return onlineModelName; }
     public void setOnlineModelName(String onlineModelName) { this.onlineModelName = onlineModelName; }
+
+    public String getOnlineBaseUrl() { return onlineBaseUrl; }
+    public void setOnlineBaseUrl(String onlineBaseUrl) { this.onlineBaseUrl = onlineBaseUrl; }
+
+    public String getLocalModelName() { return localModelName; }
+    public void setLocalModelName(String localModelName) { this.localModelName = localModelName; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getLastActive() { return lastActive; }

@@ -13,33 +13,56 @@
     <main class="main-content">
         <div class="page-header">
             <h1>AI Settings</h1>
-            <p>Configure online API key/model or switch back to local LLM.</p>
+            <p>Choose a local Ollama model or configure an online provider separately.</p>
         </div>
 
         <div class="plan-section">
-            <h2>Model Configuration</h2>
+            <h2>Current Mode</h2>
             <p class="analysis-placeholder" id="llmStatusText">
                 Current mode: Local Ollama model
             </p>
+            <span class="field-hint" id="llmConfigHint"></span>
+        </div>
+
+        <div class="plan-section">
+            <h2>Local Ollama</h2>
             <div class="form-row">
                 <div class="form-group">
-                    <label for="onlineModelInput">Online model name (optional)</label>
-                    <input type="text" id="onlineModelInput" placeholder="e.g. llama-3.3-70b-versatile">
-                </div>
-                <div class="form-group">
-                    <label for="apiKeyInput">Online API key (OpenAI or Groq)</label>
-                    <input type="password" id="apiKeyInput" placeholder="sk-... or gsk_...">
+                    <label for="localModelInput">Local model name</label>
+                    <input type="text" id="localModelInput" placeholder="e.g. gemma4:12b-it-qat">
                 </div>
             </div>
             <div class="form-nav">
-                <button class="btn-primary" onclick="saveLlmConfig()">Save API Key</button>
-                <button class="btn-secondary" onclick="clearLlmConfig()">Use Local LLM</button>
+                <button class="btn-primary" onclick="useLocalLlm()">Use Local LLM</button>
             </div>
-            <span class="field-hint" id="llmConfigHint"></span>
+        </div>
+
+        <div class="plan-section">
+            <h2>Online Provider</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="baseUrlInput">Base URL</label>
+                    <input type="text" id="baseUrlInput" placeholder="e.g. https://api.openai.com/v1 or https://api.groq.com/openai/v1">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="onlineModelInput">Model name (optional)</label>
+                    <input type="text" id="onlineModelInput" placeholder="e.g. gpt-4o-mini or llama-3.3-70b-versatile">
+                </div>
+                <div class="form-group">
+                    <label for="apiKeyInput">API key</label>
+                    <input type="password" id="apiKeyInput" placeholder="Your API key">
+                </div>
+            </div>
+            <div class="form-nav">
+                <button class="btn-primary" onclick="saveOnlineLlmConfig()">Save Online Settings</button>
+                <button class="btn-secondary" onclick="clearLlmConfig()">Disable Online</button>
+            </div>
         </div>
     </main>
 </div>
 <div th:replace="~{fragments/footer :: footer}"></div>
-<script th:src="@{/js/ai-settings.js}"></script>
+<script th:src="@{/js/ai-settings.js(v='20260608-2')}"></script>
 </body>
 </html>

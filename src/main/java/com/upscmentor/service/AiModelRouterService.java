@@ -1,5 +1,6 @@
 package com.upscmentor.service;
 
+import com.upscmentor.config.AiConfig.OllamaModelFactory;
 import com.upscmentor.model.entity.User;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
@@ -16,18 +17,13 @@ public class AiModelRouterService {
     private static final Logger logger = LoggerFactory.getLogger(AiModelRouterService.class);
 
     private final ChatLanguageModel localModel;
+    private final OllamaModelFactory ollamaModelFactory;
 
     @Value("${ai.online.default-model:gpt-4o-mini}")
     private String defaultOnlineModel;
 
     @Value("${ai.online.openai.base-url:https://api.openai.com/v1}")
-    private String openAiBaseUrl;
-
-    @Value("${ai.online.groq.base-url:https://api.groq.com/openai/v1}")
-    private String groqBaseUrl;
-
-    @Value("${ai.online.groq.default-model:llama-3.3-70b-versatile}")
-    private String defaultGroqModel;
+    private String defaultBaseUrl;
 
     @Value("${ai.online.temperature:0.7}")
     private double onlineTemperature;
@@ -35,16 +31,27 @@ public class AiModelRouterService {
     @Value("${ai.online.timeout:180}")
     private int onlineTimeout;
 
-    public AiModelRouterService(ChatLanguageModel localModel) {
+    public AiModelRouterService(ChatLanguageModel localModel, OllamaModelFactory ollamaModelFactory) {
         this.localModel = localModel;
+        this.ollamaModelFactory = ollamaModelFactory;
     }
 
     public String generate(User user, String prompt) {
+        return generate(user, prompt, null);
+    }
+
+    public String generate(User user, String prompt, String requestedLocalModelName) {
+        String localModelOverride = normalizeModelName(requestedLocalModelName);
+        if (localModelOverride != null) {
+            logger.info("Using requested local Ollama model '{}' for user '{}'",
+                    localModelOverride, user.getUsername());
+            return ollamaModelFactory.create(localModelOverride).generate(prompt);
+        }
+
         if (hasOnlineConfig(user)) {
             String apiKey = user.getOpenAiApiKey().trim();
-            boolean isGroq = apiKey.startsWith("gsk_");
-            String modelName = resolveModelName(user, isGroq);
-            String baseUrl = isGroq ? groqBaseUrl : openAiBaseUrl;
+            String baseUrl = resolveBaseUrl(user);
+            String modelName = resolveModelName(user);
 
             try {
                 ChatLanguageModel onlineModel = OpenAiChatModel.builder()
@@ -55,8 +62,8 @@ public class AiModelRouterService {
                         .timeout(Duration.ofSeconds(onlineTimeout))
                         .build();
 
-                logger.info("Using online provider '{}' model '{}' for user '{}'",
-                        isGroq ? "GROQ" : "OPENAI", modelName, user.getUsername());
+                logger.info("Using online provider at base URL '{}' with model '{}' for user '{}'",
+                        baseUrl, modelName, user.getUsername());
                 return onlineModel.generate(prompt);
             } catch (Exception e) {
                 logger.warn("Online model failed for user '{}'. Falling back to local model. Error: {}",
@@ -64,8 +71,15 @@ public class AiModelRouterService {
             }
         }
 
-        logger.info("Using local Ollama model for user '{}'", user.getUsername());
-        return localModel.generate(prompt);
+        String localModelName = resolveLocalModelName(user);
+        if (localModelName == null) {
+            logger.info("Using local Ollama model '{}' for user '{}'",
+                    ollamaModelFactory.getDefaultModelName(), user.getUsername());
+            return localModel.generate(prompt);
+        }
+
+        logger.info("Using local Ollama model '{}' for user '{}'", localModelName, user.getUsername());
+        return ollamaModelFactory.create(localModelName).generate(prompt);
     }
 
     private boolean hasOnlineConfig(User user) {
@@ -74,23 +88,46 @@ public class AiModelRouterService {
                 && !user.getOpenAiApiKey().isBlank();
     }
 
-    private String resolveModelName(User user, boolean isGroq) {
+    private String resolveBaseUrl(User user) {
+        if (user.getOnlineBaseUrl() != null && !user.getOnlineBaseUrl().isBlank()) {
+            return user.getOnlineBaseUrl().trim();
+        }
+        return defaultBaseUrl;
+    }
+
+    private String resolveModelName(User user) {
         String userModel = user.getOnlineModelName();
         if (userModel != null && !userModel.isBlank()) {
             String model = userModel.trim();
             if (isSafetyOrGuardModel(model)) {
-                String fallback = isGroq ? defaultGroqModel : defaultOnlineModel;
                 logger.warn("Configured model '{}' looks like a safety/guard model. Using '{}' instead.",
-                        model, fallback);
-                return fallback;
+                        model, defaultOnlineModel);
+                return defaultOnlineModel;
             }
+            logger.debug("Using user-configured model '{}'", model);
             return model;
         }
-        return isGroq ? defaultGroqModel : defaultOnlineModel;
+        logger.info("No model name configured for user '{}', falling back to default '{}'",
+                user.getUsername(), defaultOnlineModel);
+        return defaultOnlineModel;
     }
 
     private boolean isSafetyOrGuardModel(String model) {
         String m = model.toLowerCase();
         return m.contains("guard") || m.contains("moderation") || m.contains("safety");
+    }
+
+    private String resolveLocalModelName(User user) {
+        if (user == null) {
+            return null;
+        }
+        return normalizeModelName(user.getLocalModelName());
+    }
+
+    private String normalizeModelName(String modelName) {
+        if (modelName == null || modelName.isBlank()) {
+            return null;
+        }
+        return modelName.trim();
     }
 }

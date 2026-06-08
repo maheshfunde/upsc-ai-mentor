@@ -55,4 +55,14 @@ public class DashboardController {
     public String aiSettings() {
         return "ai-settings";
     }
+
+    @GetMapping("/reference")
+    public String quickReference() {
+        return "reference";
+    }
+
+    @GetMapping("/flashcards")
+    public String flashcards() {
+        return "flashcards";
+    }
 }

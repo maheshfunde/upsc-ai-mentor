@@ -128,11 +128,11 @@ public class UserController {
     }
 
     /**
-     * POST /api/user/{id}/llm-config - Save API key + online model preference
+     * POST /api/user/{id}/llm-config - Save online API key + model preference
      */
     @PostMapping("/{id}/llm-config")
-    public ResponseEntity<?> saveLlmConfig(@PathVariable Long id,
-                                           @RequestBody LlmConfigRequest request) {
+    public ResponseEntity<?> saveOnlineLlmConfig(@PathVariable Long id,
+                                                 @RequestBody LlmConfigRequest request) {
         try {
             if (request.getApiKey() == null || request.getApiKey().trim().isEmpty()) {
                 return ResponseEntity.badRequest().body(Map.of(
@@ -140,10 +140,36 @@ public class UserController {
                         "error", "API key is required"
                 ));
             }
-            userService.updateLlmConfig(id, request.getApiKey(), request.getModelName());
+            userService.updateOnlineLlmConfig(id, request.getApiKey(), request.getModelName(), request.getBaseUrl());
             return ResponseEntity.ok(Map.of(
                     "success", true,
                     "message", "Online model configuration saved"
+            ));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "error", e.getMessage()
+            ));
+        }
+    }
+
+    /**
+     * POST /api/user/{id}/llm-config/local - Save local model and switch to local LLM
+     */
+    @PostMapping("/{id}/llm-config/local")
+    public ResponseEntity<?> saveLocalLlmConfig(@PathVariable Long id,
+                                                @RequestBody LlmConfigRequest request) {
+        try {
+            if (request.getLocalModelName() == null || request.getLocalModelName().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of(
+                        "success", false,
+                        "error", "Local model name is required"
+                ));
+            }
+            userService.updateLocalLlmConfig(id, request.getLocalModelName());
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "message", "Switched to local model"
             ));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of(
@@ -165,6 +191,8 @@ public class UserController {
             response.put("success", true);
             response.put("onlineConfigured", configured);
             response.put("modelName", user.getOnlineModelName());
+            response.put("baseUrl", user.getOnlineBaseUrl());
+            response.put("localModelName", user.getLocalModelName());
             response.put("provider", configured ? "OPENAI" : "OLLAMA");
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
@@ -173,7 +201,7 @@ public class UserController {
     }
 
     /**
-     * DELETE /api/user/{id}/llm-config - Clear online model config and use local LLM
+     * DELETE /api/user/{id}/llm-config - Clear online model config and use saved local LLM
      */
     @DeleteMapping("/{id}/llm-config")
     public ResponseEntity<?> clearLlmConfig(@PathVariable Long id) {

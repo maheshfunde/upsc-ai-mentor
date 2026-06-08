@@ -3,6 +3,10 @@
 // ============================================
 
 let currentQuestion = '';
+let timerInterval = null;
+let timerSeconds = 0;
+let timerDuration = 0;
+let timerRunning = false;
 
 document.addEventListener('DOMContentLoaded', () => {
     const user = JSON.parse(localStorage.getItem('upscMentorUser'));
@@ -11,45 +15,163 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // Word counter for answer textarea
     const userAnswer = document.getElementById('userAnswer');
     if (userAnswer) {
         userAnswer.addEventListener('input', updateWordCount);
+        userAnswer.addEventListener('input', autoExpandTextarea);
     }
 
-    // Update target words when word limit changes
     const wordLimitSelect = document.getElementById('wordLimit');
     if (wordLimitSelect) {
         wordLimitSelect.addEventListener('change', () => {
-            document.getElementById('targetWords').textContent = wordLimitSelect.value;
+            const el = document.getElementById('wordCounter');
+            if (el) el.textContent = `0 / ${wordLimitSelect.value} words`;
         });
     }
 });
 
+// ============================================
+// WORD COUNT & AUTO-EXPAND
+// ============================================
+
 function updateWordCount() {
     const text = document.getElementById('userAnswer').value.trim();
     const wordCount = text ? text.split(/\s+/).length : 0;
-    const countEl = document.getElementById('wordCount');
-    const targetWords = parseInt(document.getElementById('targetWords').textContent);
+    const targetWords = parseInt(document.getElementById('wordLimit').value);
+    const countEl = document.getElementById('wordCounter');
 
-    countEl.textContent = wordCount;
+    if (countEl) {
+        countEl.textContent = `${wordCount} / ${targetWords} words`;
+        countEl.className = 'input-counter';
 
-    // Color coding
-    if (wordCount > targetWords * 1.1) {
-        countEl.style.color = '#ef4444'; // Red - over limit
-    } else if (wordCount >= targetWords * 0.8) {
-        countEl.style.color = '#22c55e'; // Green - good range
-    } else {
-        countEl.style.color = '#f59e0b'; // Yellow - need more
+        if (wordCount > targetWords * 1.1) {
+            countEl.classList.add('danger');
+        } else if (wordCount >= targetWords * 0.9) {
+            countEl.classList.add('warning');
+        }
     }
 }
+
+function autoExpandTextarea() {
+    const el = this;
+    el.style.height = 'auto';
+    el.style.height = Math.max(300, Math.min(el.scrollHeight, 600)) + 'px';
+}
+
+// ============================================
+// ANSWER WRITING TIMER
+// ============================================
+
+function setTimer(minutes) {
+    timerDuration = minutes * 60;
+    timerSeconds = timerDuration;
+    timerRunning = false;
+    clearInterval(timerInterval);
+
+    document.getElementById('timerDisplay').textContent = formatTime(timerSeconds);
+    document.getElementById('timerDisplay').className = 'timer-display';
+
+    // Update preset buttons
+    document.querySelectorAll('.timer-preset').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+
+    if (minutes === 0) {
+        document.getElementById('timerContainer').style.display = 'none';
+    } else {
+        document.getElementById('timerContainer').style.display = 'flex';
+        document.getElementById('timerStartBtn').style.display = '';
+        document.getElementById('timerPauseBtn').style.display = 'none';
+    }
+}
+
+function startTimer() {
+    if (timerRunning) return;
+    timerRunning = true;
+
+    document.getElementById('timerStartBtn').style.display = 'none';
+    document.getElementById('timerPauseBtn').style.display = '';
+
+    timerInterval = setInterval(() => {
+        timerSeconds--;
+        document.getElementById('timerDisplay').textContent = formatTime(timerSeconds);
+
+        if (timerSeconds <= 30 && timerSeconds > 0) {
+            document.getElementById('timerDisplay').className = 'timer-display warning';
+        } else if (timerSeconds <= 0) {
+            document.getElementById('timerDisplay').className = 'timer-display danger';
+            clearInterval(timerInterval);
+            timerRunning = false;
+            alert('⏰ Time is up! Please submit your answer now.');
+        }
+    }, 1000);
+}
+
+function pauseTimer() {
+    clearInterval(timerInterval);
+    timerRunning = false;
+
+    document.getElementById('timerStartBtn').style.display = '';
+    document.getElementById('timerPauseBtn').style.display = 'none';
+}
+
+function resetTimer() {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    timerSeconds = timerDuration;
+
+    document.getElementById('timerDisplay').textContent = formatTime(timerSeconds);
+    document.getElementById('timerDisplay').className = 'timer-display';
+    document.getElementById('timerStartBtn').style.display = '';
+    document.getElementById('timerPauseBtn').style.display = 'none';
+}
+
+function formatTime(seconds) {
+    if (seconds <= 0) return '00:00';
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+}
+
+// ============================================
+// ANSWER TEMPLATES
+// ============================================
+
+function insertTemplate(type) {
+    const textarea = document.getElementById('userAnswer');
+    const pos = textarea.selectionStart;
+    const before = textarea.value.substring(0, pos);
+    const after = textarea.value.substring(pos);
+
+    let template = '';
+    switch (type) {
+        case 'intro':
+            template = '\n**Introduction:**\n[Start with a brief introduction that directly addresses the question. Define key terms and set the context.]\n\n';
+            break;
+        case 'body':
+            template = '\n**Key Points:**\n1. \n2. \n3. \n\n';
+            break;
+        case 'conclusion':
+            template = '\n**Conclusion:**\n[Summarize the key arguments and provide a forward-looking perspective. Suggest reforms or improvements.]\n\n';
+            break;
+        case 'points':
+            template = '\n• \n• \n• \n\n';
+            break;
+    }
+
+    textarea.value = before + template + after;
+    textarea.focus();
+    updateWordCount();
+}
+
+// ============================================
+// QUESTION GENERATION
+// ============================================
 
 async function generateQuestion() {
     const user = JSON.parse(localStorage.getItem('upscMentorUser'));
     const subject = document.getElementById('answerSubject').value;
     const isOptional = document.getElementById('isOptionalAnswer').checked;
 
-    // Show loading
     document.getElementById('questionSection').style.display = 'none';
     document.getElementById('answerSection').style.display = 'none';
     document.getElementById('evaluationSection').style.display = 'none';
@@ -71,11 +193,14 @@ async function generateQuestion() {
             document.getElementById('questionSection').style.display = 'block';
             document.getElementById('answerSection').style.display = 'block';
 
-            // Clear previous answer
             document.getElementById('userAnswer').value = '';
             updateWordCount();
 
-            // Scroll to question
+            // Reset timer
+            clearInterval(timerInterval);
+            timerRunning = false;
+            document.getElementById('timerContainer').style.display = 'none';
+
             document.getElementById('questionSection').scrollIntoView({ behavior: 'smooth' });
         } else {
             alert('Could not generate question. Please try again.');
@@ -86,6 +211,18 @@ async function generateQuestion() {
         console.error('Question generation error:', error);
     }
 }
+
+async function generateRandomQuestion() {
+    const subjects = ['POLITY', 'ECONOMY', 'HISTORY_MODERN', 'ENVIRONMENT', 'SCIENCE_TECH', 'GS4'];
+    const randomSubject = subjects[Math.floor(Math.random() * subjects.length)];
+
+    document.getElementById('answerSubject').value = randomSubject;
+    generateQuestion();
+}
+
+// ============================================
+// ANSWER SUBMISSION & EVALUATION
+// ============================================
 
 async function submitAnswer() {
     const user = JSON.parse(localStorage.getItem('upscMentorUser'));
@@ -104,11 +241,15 @@ async function submitAnswer() {
         return;
     }
 
-    // Show loading
+    // Stop timer if running
+    if (timerRunning) {
+        clearInterval(timerInterval);
+        timerRunning = false;
+    }
+
     document.getElementById('answerSection').style.display = 'none';
     document.getElementById('loadingSection').style.display = 'block';
-    document.getElementById('loadingText').textContent =
-        'AI is evaluating your answer... This may take a moment.';
+    document.getElementById('loadingText').textContent = 'AI is evaluating your answer... This may take a moment.';
 
     try {
         const response = await fetch('/api/answer/evaluate', {
@@ -143,33 +284,23 @@ async function submitAnswer() {
 }
 
 function displayEvaluation(data) {
-    // Scores
     document.getElementById('overallScore').textContent = data.overallScore || '-';
     document.getElementById('contentScore').textContent = data.contentScore || '-';
     document.getElementById('structureScore').textContent = data.structureScore || '-';
     document.getElementById('analyticalScore').textContent = data.analyticalScore || '-';
 
-    // Color code scores
     colorScore('overallScore', data.overallScore);
     colorScore('contentScore', data.contentScore);
     colorScore('structureScore', data.structureScore);
     colorScore('analyticalScore', data.analyticalScore);
 
-    // Feedback
-    document.getElementById('strengthsFeedback').innerHTML =
-        marked.parse(data.strengths || 'Not available');
-    document.getElementById('weaknessesFeedback').innerHTML =
-        marked.parse(data.weaknesses || 'Not available');
-    document.getElementById('suggestionsFeedback').innerHTML =
-        marked.parse(data.suggestions || 'Not available');
-    document.getElementById('missedFeedback').innerHTML =
-        marked.parse(data.dimensionsMissed || 'None identified');
+    document.getElementById('strengthsFeedback').innerHTML = marked.parse(data.strengths || 'Not available');
+    document.getElementById('weaknessesFeedback').innerHTML = marked.parse(data.weaknesses || 'Not available');
+    document.getElementById('suggestionsFeedback').innerHTML = marked.parse(data.suggestions || 'Not available');
+    document.getElementById('missedFeedback').innerHTML = marked.parse(data.dimensionsMissed || 'None identified');
 
-    // Model answer
-    document.getElementById('modelAnswer').innerHTML =
-        marked.parse(data.modelAnswer || 'Model answer not available.');
+    document.getElementById('modelAnswer').innerHTML = marked.parse(data.modelAnswer || 'Model answer not available.');
 
-    // Show evaluation section
     document.getElementById('evaluationSection').style.display = 'block';
     document.getElementById('evaluationSection').scrollIntoView({ behavior: 'smooth' });
 }
@@ -178,10 +309,10 @@ function colorScore(elementId, score) {
     const el = document.getElementById(elementId);
     if (!el || !score) return;
 
-    if (score >= 8) el.style.color = '#22c55e';       // Green
-    else if (score >= 6) el.style.color = '#f59e0b';   // Yellow
-    else if (score >= 4) el.style.color = '#f97316';    // Orange
-    else el.style.color = '#ef4444';                     // Red
+    if (score >= 8) el.style.color = '#22c55e';
+    else if (score >= 6) el.style.color = '#f59e0b';
+    else if (score >= 4) el.style.color = '#f97316';
+    else el.style.color = '#ef4444';
 }
 
 function resetPractice() {
@@ -190,8 +321,9 @@ function resetPractice() {
     document.getElementById('answerSection').style.display = 'none';
     document.getElementById('evaluationSection').style.display = 'none';
     document.getElementById('userAnswer').value = '';
+    clearInterval(timerInterval);
+    timerRunning = false;
     updateWordCount();
 
-    // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }

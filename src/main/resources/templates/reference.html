@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPSC AI Mentor - Quick Reference</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+</head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/sidebar :: sidebar(activeItem='reference')}"></div>
+
+    <main class="main-content">
+        <div class="reference-header">
+            <h1>📚 Quick Reference</h1>
+            <p>Quick lookup for Constitutional Articles, Government Schemes, Committees, and more</p>
+        </div>
+
+        <div class="reference-search">
+            <input type="text" id="referenceSearch" placeholder="🔍 Search articles, schemes, committees..." oninput="filterReferences()">
+        </div>
+
+        <div class="reference-tabs" id="referenceTabs">
+            <button class="reference-tab active" data-tab="articles" onclick="switchTab('articles')">📜 Constitutional Articles</button>
+            <button class="reference-tab" data-tab="schemes" onclick="switchTab('schemes')">🏛️ Government Schemes</button>
+            <button class="reference-tab" data-tab="committees" onclick="switchTab('committees')">👥 Important Committees</button>
+            <button class="reference-tab" data-tab="amendments" onclick="switchTab('amendments')">📝 Key Amendments</button>
+            <button class="reference-tab" data-tab="schedules" onclick="switchTab('schedules')">📋 Schedules</button>
+            <button class="reference-tab" data-tab="bodies" onclick="switchTab('bodies')">⚖️ Constitutional Bodies</button>
+        </div>
+
+        <!-- Constitutional Articles -->
+        <div class="reference-content" id="tab-articles">
+            <div class="reference-section">
+                <h3>📜 Fundamental Rights (Part III, Articles 12-35)</h3>
+                <div class="reference-grid">
+                    <div class="reference-card" data-search="Article 12 Definition of State includes government parliament legislature executive local authorities">
+                        <h4>Article 12</h4>
+                        <p>Definition of "State" — includes Government, Parliament, State Legislatures, local authorities</p>
+                        <span class="tag">Part III</span>
+                    </div>
+                    <div class="reference-card" data-search="Article 13 Laws inconsistent with Fundamental Rights judicial review">
+                        <h4>Article 13</h4>
+                        <p>Laws inconsistent with or in derogation of Fundamental Rights — basis of Judicial Review</p>
+                        <span class="tag">Part III</span>
+                    </div>
+                    <div class="reference-card" data-search="Article 14 Equality before law equal protection of laws">
+                        <h4>Article 14</h4>
+                        <p>Equality before law and equal protection of laws</p>
+                        <span class="tag">Right to Equality</span>
+                    </div>
+                    <div class="reference-card" data-search="Article 15 Prohibition of discrimination on grounds religion race caste sex place birth">
+                        <h4>Article 15</h4>
+                        <p>Prohibition of discrimination on grounds of religion, race, caste, sex, or place of birth</p>
+                        <span class="tag">Right to Equality</span>
+                    </div>
+                    <div class="reference-card" data-search="Article 16 Equality of opportunity in matters public employment reservation">
+                        <h4>Article 16</h4>
+                        <p>Equality of opportunity in matters of public employment — includes reservation provisions</p>
+                        <span class="tag">Right to Equality</span>
+                    </div>
+                    <div class="reference-card" data-search="Article 17 Abolition of Untouchability">
+                        <h4>Article 17</h4>
+                        <p>Abolition of Untouchability — absolute right, no exceptions</p>
+                        <span class="tag">Right to Equality</span>
+                    </div>
+                    <div class="reference-card" data-search="Article 18 Abolition of titles except military academic">
+                        <h4>Article 18</h4>
+                        <p>Abolition of titles — prohibits state from conferring titles except military/academic</p>
+                        <span class="tag">Right to Equality</span>
+                    </div>
+                    <div class="reference-card" data-search="Article 19 Six freedoms speech assembly association movement residence profession">
+                        <h4>Article 19</h4>
+                        <p>Protection of 6 rights: Speech, Assembly, Association, Movement, Residence, Profession</p>
+                        <span class="tag">Freedom</span>
+                    </div>
+                    <div class="reference-card" data-search="Article 21 Protection of life personal liberty fundamental right">
+                        <h4>Article 21</h4>
+                        <p>Protection of life and personal liberty — most interpreted article, includes right to privacy, education, environment</p>
+                        <span class="tag">Life & Liberty</span>
+                    </div>
+                    <div class="reference-card" data-search="Article 21A Free compulsory education children age 6-14 RTE">
+                        <h4>Article 21A</h4>
+                        <p>Right to Education — free and compulsory education for children aged 6-14 (86th Amendment)</p>
+                        <span class="tag">Education</span>
+                    </div>
+                    <div class="reference-card" data-search="Article 32 Constitutional remedies writs habeas corpus mandamus prohibition certiorari quo warranto">
+                        <h4>Article 32</h4>
+                        <p>Remedies for enforcement of Fundamental Rights — "heart and soul of the Constitution" (Ambedkar). Writs: Habeas Corpus, Mandamus, Prohibition, Certiorari, Quo Warranto</p>
+                        <span class="tag">Constitutional Remedies</span>
+                    </div>
+                    <div class="reference-card" data-search="Article 226 High Court writ jurisdiction wider than Article 32">
+                        <h4>Article 226</h4>
+                        <p>Power of High Courts to issue writs — wider than Article 32 (covers legal rights too)</p>
+                        <span class="tag">High Courts</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reference-section">
+                <h3>🏛️ Directive Principles of State Policy (Part IV, Articles 36-51)</h3>
+                <div class="reference-grid">
+                    <div class="reference-card" data-search="Article 39A Free legal aid equal justice poor">
+                        <h4>Article 39A</h4>
+                        <p>Equal justice and free legal aid — ensures justice is not denied due to poverty</p>
+                        <span class="tag">DPSP</span>
+                    </div>
+                    <div class="reference-card" data-search="Article 40 Village Panchayats local self government">
+                        <h4>Article 40</h4>
+                        <p>Organisation of Village Panchayats — basis of Panchayati Raj system</p>
+                        <span class="tag">DPSP</span>
+                    </div>
+                    <div class="reference-card" data-search="Article 44 Uniform Civil Code UCC">
+                        <h4>Article 44</h4>
+                        <p>Uniform Civil Code — directive for common civil laws for all citizens</p>
+                        <span class="tag">DPSP</span>
+                    </div>
+                    <div class="reference-card" data-search="Article 45 Early childhood care education below age 6">
+                        <h4>Article 45</h4>
+                        <p>Provision for early childhood care and education for children below age 6</p>
+                        <span class="tag">DPSP</span>
+                    </div>
+                    <div class="reference-card" data-search="Article 48 Organisation agriculture animal husbandry cow slaughter prohibition">
+                        <h4>Article 48</h4>
+                        <p>Organisation of agriculture and animal husbandry — prohibition of cow slaughter</p>
+                        <span class="tag">DPSP</span>
+                    </div>
+                    <div class="reference-card" data-search="Article 50 Separation of judiciary from executive">
+                        <h4>Article 50</h4>
+                        <p>Separation of judiciary from executive in public services</p>
+                        <span class="tag">DPSP</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reference-section">
+                <h3>⚙️ Union, States & Emergency Provisions</h3>
+                <div class="reference-grid">
+                    <div class="reference-card" data-search="Article 52 President of India head of state">
+                        <h4>Article 52</h4>
+                        <p>There shall be a President of India — head of the Union Executive</p>
+                        <span class="tag">Union Executive</span>
+                    </div>
+                    <div class="reference-card" data-search="Article 74 Council Ministers aid advise President">
+                        <h4>Article 74</h4>
+                        <p>Council of Ministers to aid and advise the President — real executive power</p>
+                        <span class="tag">Union Executive</span>
+                    </div>
+                    <div class="reference-card" data-search="Article 356 President's rule State failure constitutional machinery emergency">
+                        <h4>Article 356</h4>
+                        <p>Provisions in case of failure of constitutional machinery in States — President's Rule</p>
+                        <span class="tag">Emergency</span>
+                    </div>
+                    <div class="reference-card" data-search="Article 352 Proclamation Emergency war external aggression armed rebellion">
+                        <h4>Article 352</h4>
+                        <p>Proclamation of Emergency — on grounds of war, external aggression, or armed rebellion</p>
+                        <span class="tag">Emergency</span>
+                    </div>
+                    <div class="reference-card" data-search="Article 360 Financial Emergency economic stability credit India threatened">
+                        <h4>Article 360</h4>
+                        <p>Financial Emergency — if financial stability or credit of India is threatened (never invoked)</p>
+                        <span class="tag">Emergency</span>
+                    </div>
+                    <div class="reference-card" data-search="Article 368 Amendment Constitution procedure parliament special majority">
+                        <h4>Article 368</h4>
+                        <p>Power of Parliament to amend the Constitution and procedure therefor</p>
+                        <span class="tag">Amendment</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Government Schemes -->
+        <div class="reference-content" id="tab-schemes" style="display:none;">
+            <div class="reference-section">
+                <h3>🏛️ Major Government Schemes</h3>
+                <div class="reference-grid">
+                    <div class="reference-card" data-search="MGNREGA Mahatma Gandhi National Rural Employment Guarantee Act 100 days wage employment rural">
+                        <h4>MGNREGA (2005)</h4>
+                        <p>Guarantees 100 days of wage employment per year to rural households. Right to Work legislation.</p>
+                        <span class="tag">Employment</span>
+                        <span class="tag">Rural</span>
+                    </div>
+                    <div class="reference-card" data-search="PMJDY Pradhan Mantri Jan Dhan Yojana financial inclusion bank accounts zero balance">
+                        <h4>PM Jan Dhan Yojana (2014)</h4>
+                        <p>Financial inclusion — zero balance bank accounts for all households, RuPay debit cards</p>
+                        <span class="tag">Financial Inclusion</span>
+                    </div>
+                    <div class="reference-card" data-search="PMAY Pradhan Mantri Awas Yojana housing for all affordable urban rural">
+                        <h4>PM Awas Yojana (2015)</h4>
+                        <p>Housing for All — affordable housing for urban and rural poor by 2024</p>
+                        <span class="tag">Housing</span>
+                    </div>
+                    <div class="reference-card" data-search="Swachh Bharat Mission cleanliness sanitation open defecation free toilet construction">
+                        <h4>Swachh Bharat Mission (2014)</h4>
+                        <p>Clean India Mission — elimination of open defecation, solid waste management</p>
+                        <span class="tag">Sanitation</span>
+                    </div>
+                    <div class="reference-card" data-search="Ayushman Bharat PM-JAY health insurance coverage free treatment secondary tertiary poor">
+                        <h4>Ayushman Bharat — PM-JAY (2018)</h4>
+                        <p>Health insurance coverage of ₹5 lakh per family per year for secondary and tertiary care</p>
+                        <span class="tag">Health</span>
+                    </div>
+                    <div class="reference-card" data-search="Make India manufacturing self-reliance Aatmanirbhar PLI production linked incentive">
+                        <h4>Make in India (2014) & PLI Scheme</h4>
+                        <p>Boost domestic manufacturing — PLI schemes across 14 sectors including electronics, pharma, auto</p>
+                        <span class="tag">Manufacturing</span>
+                    </div>
+                    <div class="reference-card" data-search="Digital India e-governance broadband digital literacy online services">
+                        <h4>Digital India (2015)</h4>
+                        <p>Digital infrastructure, e-governance, digital literacy — Aadhaar, UPI, DigiLocker, CoWIN</p>
+                        <span class="tag">Digital</span>
+                    </div>
+                    <div class="reference-card" data-search="Startup India entrepreneurship innovation incubation tax exemptions">
+                        <h4>Startup India (2016)</h4>
+                        <p>Promote entrepreneurship — tax exemptions, incubation support, self-certification</p>
+                        <span class="tag">Entrepreneurship</span>
+                    </div>
+                    <div class="reference-card" data-search="Beti Bachao Beti Padhao girl child education survival sex ratio">
+                        <h4>Beti Bachao Beti Padhao (2015)</h4>
+                        <p>Survival, protection, and education of the girl child — improve child sex ratio</p>
+                        <span class="tag">Women</span>
+                        <span class="tag">Education</span>
+                    </div>
+                    <div class="reference-card" data-search="PM-KISAN income support farmers 6000 rupees per year directly bank transfer">
+                        <h4>PM-KISAN (2019)</h4>
+                        <p>Income support of ₹6,000/year to farmer families in three equal instalments</p>
+                        <span class="tag">Agriculture</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Important Committees -->
+        <div class="reference-content" id="tab-committees" style="display:none;">
+            <div class="reference-section">
+                <h3>👥 Important Committees & Commissions</h3>
+                <div class="reference-grid">
+                    <div class="reference-card" data-search="Sarkaria Commission Centre-State relations governor role article 356">
+                        <h4>Sarkaria Commission (1983)</h4>
+                        <p>Centre-State relations — recommended limited use of Article 356, governor's role</p>
+                        <span class="tag">Centre-State</span>
+                    </div>
+                    <div class="reference-card" data-search="Mandal Commission OBC reservation 27 percent backward classes">
+                        <h4>Mandal Commission (1980)</h4>
+                        <p>Identified socially and educationally backward classes — recommended 27% OBC reservation</p>
+                        <span class="tag">Reservation</span>
+                    </div>
+                    <div class="reference-card" data-search="Punchhi Commission Centre-State relations governor term removal">
+                        <h4>Punchhi Commission (2007)</h4>
+                        <p>Centre-State relations — governor's term, removal, state autonomy</p>
+                        <span class="tag">Centre-State</span>
+                    </div>
+                    <div class="reference-card" data-search="Pokhran nuclear test atomic bomb India">
+                        <h4>Pokhran-II (1998)</h4>
+                        <p>India's second series of nuclear tests — declared India a nuclear weapons state</p>
+                        <span class="tag">Defence</span>
+                    </div>
+                    <div class="reference-card" data-search="Second Administrative Reforms Commission governance transparency accountability">
+                        <h4>2nd ARC (2005-2009)</h4>
+                        <p>Administrative Reforms — ethics in governance, RTI, e-governance, citizen charters</p>
+                        <span class="tag">Governance</span>
+                    </div>
+                    <div class="reference-card" data-search="Rangarajan Committee poverty line estimation methodology">
+                        <h4>Rangarajan Committee (2012)</h4>
+                        <p>Revised poverty line estimation methodology — recommended higher poverty lines</p>
+                        <span class="tag">Economy</span>
+                    </div>
+                    <div class="reference-card" data-search="Urjit Patel Committee RBI monetary policy framework inflation targeting">
+                        <h4>Urjit Patel Committee (2014)</h4>
+                        <p>Monetary policy framework — recommended 4% CPI inflation target with ±2% band</p>
+                        <span class="tag">RBI</span>
+                    </div>
+                    <div class="reference-card" data-search="Kothari Commission education policy 1968 10+2+3 pattern">
+                        <h4>Kothari Commission (1964-66)</h4>
+                        <p>Education policy — recommended 10+2+3 pattern, national curriculum, Hindi as link language</p>
+                        <span class="tag">Education</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Amendments -->
+        <div class="reference-content" id="tab-amendments" style="display:none;">
+            <div class="reference-section">
+                <h3>📝 Key Constitutional Amendments</h3>
+                <div class="reference-grid">
+                    <div class="reference-card" data-search="1st Amendment 1951 Fundamental Rights reasonable restrictions zamindari abolition 9th schedule">
+                        <h4>1st Amendment (1951)</h4>
+                        <p>Added reasonable restrictions on FRs, created 9th Schedule, abolished zamindari</p>
+                        <span class="tag">Amendment</span>
+                    </div>
+                    <div class="reference-card" data-search="42nd Amendment 1976 Mini Constitution fundamental duties socialism secular India">
+                        <h4>42nd Amendment (1976)</h4>
+                        <p>"Mini Constitution" — added Fundamental Duties, made India "Socialist, Secular" in Preamble</p>
+                        <span class="tag">Amendment</span>
+                    </div>
+                    <div class="reference-card" data-search="44th Amendment 1978 undo 42nd amendment right property removed fundamental right">
+                        <h4>44th Amendment (1978)</h4>
+                        <p>Undid excesses of 42nd Amendment — made right to property a legal right (Article 300A)</p>
+                        <span class="tag">Amendment</span>
+                    </div>
+                    <div class="reference-card" data-search="61st Amendment 1989 voting age reduced 21 18 years">
+                        <h4>61st Amendment (1989)</h4>
+                        <p>Reduced voting age from 21 to 18 years</p>
+                        <span class="tag">Amendment</span>
+                    </div>
+                    <div class="reference-card" data-search="73rd Amendment 1992 Panchayati Raj three tier system 11th Schedule">
+                        <h4>73rd Amendment (1992)</h4>
+                        <p>Panchayati Raj — three-tier system, 11th Schedule (29 subjects), reservation for women</p>
+                        <span class="tag">Amendment</span>
+                    </div>
+                    <div class="reference-card" data-search="74th Amendment 1992 Municipalities urban local government 12th Schedule">
+                        <h4>74th Amendment (1992)</h4>
+                        <p>Municipalities — urban local government, 12th Schedule (18 subjects)</p>
+                        <span class="tag">Amendment</span>
+                    </div>
+                    <div class="reference-card" data-search="86th Amendment 2002 right education Article 21A fundamental right children 6-14">
+                        <h4>86th Amendment (2002)</h4>
+                        <p>Right to Education — made education a fundamental right (Article 21A) for ages 6-14</p>
+                        <span class="tag">Amendment</span>
+                    </div>
+                    <div class="reference-card" data-search="101st Amendment 2016 GST goods services tax constitutional amendment">
+                        <h4>101st Amendment (2016)</h4>
+                        <p>GST — Goods and Services Tax, one nation one tax</p>
+                        <span class="tag">Amendment</span>
+                    </div>
+                    <div class="reference-card" data-search="103rd Amendment 2019 EWS economically weaker sections 10 percent reservation general category">
+                        <h4>103rd Amendment (2019)</h4>
+                        <p>EWS Reservation — 10% reservation for Economically Weaker Sections in general category</p>
+                        <span class="tag">Amendment</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Schedules -->
+        <div class="reference-content" id="tab-schedules" style="display:none;">
+            <div class="reference-section">
+                <h3>📋 Schedules of the Constitution</h3>
+                <div class="reference-grid">
+                    <div class="reference-card" data-search="1st Schedule States union territories names area">
+                        <h4>1st Schedule</h4>
+                        <p>Names of States and Union Territories with their territorial extent</p>
+                        <span class="tag">Schedule 1</span>
+                    </div>
+                    <div class="reference-card" data-search="2nd Schedule emoluments President governor Speaker judge CAG">
+                        <h4>2nd Schedule</h4>
+                        <p>Emoluments of President, Governors, Speaker, Judges, CAG</p>
+                        <span class="tag">Schedule 2</span>
+                    </div>
+                    <div class="reference-card" data-search="3rd Schedule forms oaths affirmations ministers judges">
+                        <h4>3rd Schedule</h4>
+                        <p>Forms of Oaths and Affirmations — for ministers, judges, MPs, legislators</p>
+                        <span class="tag">Schedule 3</span>
+                    </div>
+                    <div class="reference-card" data-search="4th Schedule allocation seats Rajya Sabha states union territories">
+                        <h4>4th Schedule</h4>
+                        <p>Allocation of seats in Rajya Sabha to States and Union Territories</p>
+                        <span class="tag">Schedule 4</span>
+                    </div>
+                    <div class="reference-card" data-search="5th Schedule administration scheduled areas scheduled tribes">
+                        <h4>5th Schedule</h4>
+                        <p>Administration of Scheduled Areas and Scheduled Tribes (except NE states)</p>
+                        <span class="tag">Schedule 5</span>
+                    </div>
+                    <div class="reference-card" data-search="6th Schedule administration tribal areas Assam Meghalaya Tripura Mizoram autonomous district councils">
+                        <h4>6th Schedule</h4>
+                        <p>Administration of Tribal Areas in Assam, Meghalaya, Tripura, and Mizoram</p>
+                        <span class="tag">Schedule 6</span>
+                    </div>
+                    <div class="reference-card" data-search="7th Schedule union state concurrent lists division powers legislative subjects">
+                        <h4>7th Schedule</h4>
+                        <p>Division of Powers — Union List (97), State List (66), Concurrent List (52) subjects</p>
+                        <span class="tag">Schedule 7</span>
+                    </div>
+                    <div class="reference-card" data-search="8th Schedule official languages recognized 22">
+                        <h4>8th Schedule</h4>
+                        <p>Languages — 22 recognized official languages</p>
+                        <span class="tag">Schedule 8</span>
+                    </div>
+                    <div class="reference-card" data-search="9th Schedule land reform laws judicial review immunity">
+                        <h4>9th Schedule</h4>
+                        <p>Land reform laws — immune from judicial review (added by 1st Amendment)</p>
+                        <span class="tag">Schedule 9</span>
+                    </div>
+                    <div class="reference-card" data-search="10th Schedule anti defection law disqualification members parliament legislature">
+                        <h4>10th Schedule</h4>
+                        <p>Anti-Defection Law — disqualification of members on ground of defection (52nd Amendment)</p>
+                        <span class="tag">Schedule 10</span>
+                    </div>
+                    <div class="reference-card" data-search="11th Schedule Panchayati Raj 29 subjects 73rd Amendment">
+                        <h4>11th Schedule</h4>
+                        <p>Panchayati Raj — 29 subjects (added by 73rd Amendment)</p>
+                        <span class="tag">Schedule 11</span>
+                    </div>
+                    <div class="reference-card" data-search="12th Schedule Municipalities 18 subjects 74th Amendment">
+                        <h4>12th Schedule</h4>
+                        <p>Municipalities — 18 subjects (added by 74th Amendment)</p>
+                        <span class="tag">Schedule 12</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Constitutional Bodies -->
+        <div class="reference-content" id="tab-bodies" style="display:none;">
+            <div class="reference-section">
+                <h3>⚖️ Constitutional Bodies</h3>
+                <div class="reference-grid">
+                    <div class="reference-card" data-search="Election Commission independent body conduct elections free fair president governor parliament state legislature">
+                        <h4>Election Commission (Article 324)</h4>
+                        <p>Independent body for conducting elections to Parliament, State Legislatures, President, and VP</p>
+                        <span class="tag">Article 324</span>
+                    </div>
+                    <div class="reference-card" data-search="UPSC Union Public Service Commission recruitment civil services central government">
+                        <h4>UPSC (Article 315)</h4>
+                        <p>Recruitment to All-India Services and Central Services — conducts Civil Services Examination</p>
+                        <span class="tag">Article 315</span>
+                    </div>
+                    <div class="reference-card" data-search="SPSC State Public Service Commission recruitment state services">
+                        <h4>State PSC (Article 315)</h4>
+                        <p>Recruitment to State Services — conducts State Civil Services Examination</p>
+                        <span class="tag">Article 315</span>
+                    </div>
+                    <div class="reference-card" data-search="Finance Commission distribution revenue centre states fiscal federalism">
+                        <h4>Finance Commission (Article 280)</h4>
+                        <p>Recommends distribution of revenue between Centre and States — constituted every 5 years</p>
+                        <span class="tag">Article 280</span>
+                    </div>
+                    <div class="reference-card" data-search="CAG Comptroller Auditor General audit government accounts public expenditure">
+                        <h4>CAG (Article 148)</h4>
+                        <p>Comptroller and Auditor General — audits all government accounts and public expenditure</p>
+                        <span class="tag">Article 148</span>
+                    </div>
+                    <div class="reference-card" data-search="NHRC National Human Rights Commission protection promotion human rights">
+                        <h4>NHRC (Protection of Human Rights Act, 1993)</h4>
+                        <p>Protection and promotion of human rights — statutory body, not constitutional</p>
+                        <span class="tag">Statutory</span>
+                    </div>
+                    <div class="reference-card" data-search="NCSC National Commission Scheduled Castes welfare safeguards rights">
+                        <h4>NCSC (Article 338)</h4>
+                        <p>Safeguards for Scheduled Castes — monitors implementation of constitutional safeguards</p>
+                        <span class="tag">Article 338</span>
+                    </div>
+                    <div class="reference-card" data-search="NCST National Commission Scheduled Tribes welfare safeguards rights">
+                        <h4>NCST (Article 338A)</h4>
+                        <p>Safeguards for Scheduled Tribes — monitors implementation of constitutional safeguards</p>
+                        <span class="tag">Article 338A</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:src="@{/js/reference.js(v='20260608-v1')}"></script>
+</body>
+</html>

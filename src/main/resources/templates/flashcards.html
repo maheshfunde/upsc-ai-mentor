@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPSC AI Mentor - Flashcards</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+</head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/sidebar :: sidebar(activeItem='flashcards')}"></div>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1>🧠 Quick Revision Flashcards</h1>
+            <p>Spaced repetition for key UPSC facts — Constitutional Articles, Schemes, Committees, and more</p>
+        </div>
+
+        <div class="plan-section">
+            <h2>Choose a Deck</h2>
+            <div class="plan-actions">
+                <button class="plan-action-btn" onclick="startDeck('articles')">
+                    <span class="plan-action-icon">📜</span>
+                    <span class="plan-action-text">Constitutional Articles</span>
+                </button>
+                <button class="plan-action-btn" onclick="startDeck('schemes')">
+                    <span class="plan-action-icon">🏛️</span>
+                    <span class="plan-action-text">Government Schemes</span>
+                </button>
+                <button class="plan-action-btn" onclick="startDeck('amendments')">
+                    <span class="plan-action-icon">📝</span>
+                    <span class="plan-action-text">Key Amendments</span>
+                </button>
+                <button class="plan-action-btn" onclick="startDeck('committees')">
+                    <span class="plan-action-icon">👥</span>
+                    <span class="plan-action-text">Important Committees</span>
+                </button>
+                <button class="plan-action-btn" onclick="startDeck('bodies')">
+                    <span class="plan-action-icon">⚖️</span>
+                    <span class="plan-action-text">Constitutional Bodies</span>
+                </button>
+                <button class="plan-action-btn" onclick="startDeck('mixed')">
+                    <span class="plan-action-icon">🔀</span>
+                    <span class="plan-action-text">Mixed (All Topics)</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="plan-section" id="flashcardSection" style="display:none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h2 id="deckTitle" style="margin-bottom: 0;"></h2>
+                <button class="btn-secondary btn-small" onclick="exitDeck()">✕ Exit Deck</button>
+            </div>
+
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard" onclick="flipCard()">
+                    <div class="flashcard-face flashcard-front">
+                        <div class="flashcard-question" id="cardQuestion">Loading...</div>
+                        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 12px;">Tap to reveal answer</p>
+                    </div>
+                    <div class="flashcard-face flashcard-back">
+                        <div class="flashcard-answer" id="cardAnswer">Loading...</div>
+                    </div>
+                </div>
+
+                <div class="flashcard-nav">
+                    <button onclick="prevCard()">← Previous</button>
+                    <span class="flashcard-counter" id="cardCounter">1 / 10</span>
+                    <button onclick="nextCard()">Next →</button>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:src="@{/js/flashcards.js(v='20260608-v1')}"></script>
+</body>
+</html>

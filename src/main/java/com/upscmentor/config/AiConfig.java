@@ -24,12 +24,43 @@ public class AiConfig {
     private int timeout;
 
     @Bean
+    public OllamaModelFactory ollamaModelFactory() {
+        return new OllamaModelFactory(baseUrl, modelName, temperature, timeout);
+    }
+
+    @Bean
     public ChatLanguageModel chatLanguageModel() {
-        return OllamaChatModel.builder()
-                .baseUrl(baseUrl)
-                .modelName(modelName)
-                .temperature(temperature)
-                .timeout(Duration.ofSeconds(timeout))
-                .build();
+        return ollamaModelFactory().create(null);
+    }
+
+    public static class OllamaModelFactory {
+        private final String baseUrl;
+        private final String defaultModelName;
+        private final double temperature;
+        private final int timeout;
+
+        public OllamaModelFactory(String baseUrl, String defaultModelName, double temperature, int timeout) {
+            this.baseUrl = baseUrl;
+            this.defaultModelName = defaultModelName;
+            this.temperature = temperature;
+            this.timeout = timeout;
+        }
+
+        public ChatLanguageModel create(String requestedModelName) {
+            String resolvedModelName = requestedModelName != null && !requestedModelName.isBlank()
+                    ? requestedModelName.trim()
+                    : defaultModelName;
+
+            return OllamaChatModel.builder()
+                    .baseUrl(baseUrl)
+                    .modelName(resolvedModelName)
+                    .temperature(temperature)
+                    .timeout(Duration.ofSeconds(timeout))
+                    .build();
+        }
+
+        public String getDefaultModelName() {
+            return defaultModelName;
+        }
     }
 }

@@ -99,12 +99,34 @@ public class UserService {
     /**
      * Save or update online LLM configuration for a user
      */
-    public void updateLlmConfig(Long userId, String apiKey, String modelName) {
+    public void updateOnlineLlmConfig(Long userId, String apiKey, String modelName, String baseUrl) {
         User user = getUserById(userId);
-        user.setOpenAiApiKey(apiKey != null ? apiKey.trim() : null);
+        if (apiKey == null || apiKey.trim().isEmpty()) {
+            throw new RuntimeException("API key is required");
+        }
+        user.setOpenAiApiKey(apiKey.trim());
         user.setOnlineModelName(
                 modelName != null && !modelName.trim().isEmpty() ? modelName.trim() : null
         );
+        user.setOnlineBaseUrl(
+                baseUrl != null && !baseUrl.trim().isEmpty() ? baseUrl.trim() : null
+        );
+        user.setLastActive(LocalDateTime.now());
+        userRepository.save(user);
+    }
+
+    /**
+     * Save local LLM preference and disable online mode for a user
+     */
+    public void updateLocalLlmConfig(Long userId, String localModelName) {
+        User user = getUserById(userId);
+        if (localModelName == null || localModelName.trim().isEmpty()) {
+            throw new RuntimeException("Local model name is required");
+        }
+        user.setLocalModelName(localModelName.trim());
+        user.setOpenAiApiKey(null);
+        user.setOnlineModelName(null);
+        user.setOnlineBaseUrl(null);
         user.setLastActive(LocalDateTime.now());
         userRepository.save(user);
     }
@@ -116,6 +138,7 @@ public class UserService {
         User user = getUserById(userId);
         user.setOpenAiApiKey(null);
         user.setOnlineModelName(null);
+        user.setOnlineBaseUrl(null);
         user.setLastActive(LocalDateTime.now());
         userRepository.save(user);
     }
