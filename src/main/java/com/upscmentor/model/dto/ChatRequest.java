@@ -15,6 +15,7 @@ public class ChatRequest {
     private Long userId;
     private boolean isOptionalSubject;
     private String localModelName;
+    private String responseLanguage;
 
     // Getters and Setters
     public String getMessage() { return message; }
@@ -29,4 +30,6 @@ public class ChatRequest {
     public void setOptionalSubject(boolean optionalSubject) { isOptionalSubject = optionalSubject; }
     public String getLocalModelName() { return localModelName; }
     public void setLocalModelName(String localModelName) { this.localModelName = localModelName; }
+    public String getResponseLanguage() { return responseLanguage; }
+    public void setResponseLanguage(String responseLanguage) { this.responseLanguage = responseLanguage; }
 }

@@ -281,10 +281,11 @@ public class ChatService {
                                          String conversationHistory) {
         String fullPrompt;
         String subjectName;
+        String language = request.getResponseLanguage() != null ? request.getResponseLanguage() : "en";
 
         if (request.isOptionalSubject()) {
             fullPrompt = promptService.buildOptionalSubjectPrompt(
-                    user, conversationSummary, conversationHistory, request.getMessage());
+                    user, conversationSummary, conversationHistory, request.getMessage(), language);
             subjectName = user.getOptionalSubject() != null
                     ? user.getOptionalSubject().getDisplayName()
                     : "Optional Subject";
@@ -293,7 +294,7 @@ public class ChatService {
                     ? request.getSubject()
                     : Subject.GENERAL;
             fullPrompt = promptService.buildSubjectPrompt(
-                    user, subject, conversationSummary, conversationHistory, request.getMessage());
+                    user, subject, conversationSummary, conversationHistory, request.getMessage(), language);
             subjectName = subject.getDisplayName();
         }
 

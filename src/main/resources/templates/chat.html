@@ -28,6 +28,11 @@
                 <span class="chat-subject-badge" id="chatSubjectBadge">General</span>
             </div>
             <div class="chat-header-actions">
+                <select id="languageSelect" class="language-select" onchange="changeLanguage(this.value)" title="Response Language">
+                    <option value="en">🇬🇧 English</option>
+                    <option value="mr">🇮🇳 मराठी (Marathi)</option>
+                    <option value="bilingual">🔀 Bilingual</option>
+                </select>
                 <select id="oldChatsSelect" class="old-chats-select">
                     <option value="">Old chats</option>
                 </select>
@@ -82,6 +87,6 @@
 </div>
 <div th:replace="~{fragments/footer :: footer}"></div>
 
-<script th:src="@{/js/chat.js(v='20260608-chat-v4')}"></script>
+<script th:src="@{/js/chat.js(v='20260608-chat-v5')}"></script>
 </body>
 </html>

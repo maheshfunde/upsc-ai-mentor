@@ -968,6 +968,28 @@ body.sidebar-collapsed .quiz-section {
     gap: 8px;
 }
 
+.language-select {
+    padding: 8px 10px;
+    background: var(--bg-input);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.language-select:hover {
+    border-color: var(--accent);
+}
+
+.language-select:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 0 2px var(--accent-light);
+}
+
 .old-chats-select {
     min-width: 220px;
     padding: 8px 10px;

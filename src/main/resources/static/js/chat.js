@@ -6,11 +6,13 @@ let sessionId = null;
 let currentSubject = "GENERAL";
 let isOptionalMode = false;
 let currentUser = null;
+let responseLanguage = "en";
 
 const chatMessages = document.getElementById("chatMessages");
 const messageInput = document.getElementById("messageInput");
 const sendBtn = document.getElementById("sendBtn");
 const oldChatsSelect = document.getElementById("oldChatsSelect");
+const languageSelect = document.getElementById("languageSelect");
 
 document.addEventListener("DOMContentLoaded", () => {
     initChat();
@@ -22,6 +24,12 @@ async function initChat() {
     if (!currentUser) {
         window.location.href = "/onboarding";
         return;
+    }
+
+    // Load saved language preference
+    responseLanguage = localStorage.getItem("upscChatLanguage") || "en";
+    if (languageSelect) {
+        languageSelect.value = responseLanguage;
     }
 
     const params = new URLSearchParams(window.location.search);
@@ -160,7 +168,8 @@ async function sendChatMessage() {
                 sessionId,
                 userId: currentUser.id,
                 optionalSubject: isOptionalMode,
-                localModelName: parsedInput.localModelName
+                localModelName: parsedInput.localModelName,
+                responseLanguage: responseLanguage
             })
         });
 
@@ -572,3 +581,18 @@ function getWelcomeHTML() {
 }
 
 window.copyMessage = copyMessage;
+
+function changeLanguage(lang) {
+    responseLanguage = lang;
+    localStorage.setItem("upscChatLanguage", lang);
+
+    const langLabels = {
+        en: "English",
+        mr: "मराठी (Marathi)",
+        bilingual: "Bilingual"
+    };
+    const badgeEl = document.getElementById("chatSubjectBadge");
+    if (badgeEl) {
+        badgeEl.textContent = `${currentSubject.replace(/_/g, " ")} · ${langLabels[lang] || "English"}`;
+    }
+}
