@@ -3,9 +3,11 @@ package com.upscmentor.service;
 import com.upscmentor.model.dto.ChatRequest;
 import com.upscmentor.model.dto.ChatResponse;
 import com.upscmentor.model.entity.ChatHistory;
+import com.upscmentor.model.entity.ChatSessionMeta;
 import com.upscmentor.model.entity.User;
 import com.upscmentor.model.enums.Subject;
 import com.upscmentor.repository.ChatHistoryRepository;
+import com.upscmentor.repository.ChatSessionMetaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -21,19 +24,26 @@ public class ChatService {
 
     private static final Logger logger = LoggerFactory.getLogger(ChatService.class);
 
+    private static final int CONTEXT_WINDOW = 20;
+    private static final int SUMMARIZE_THRESHOLD = 25;
+    private static final int SUMMARIZE_KEEP = 15;
+
     private final AiModelRouterService aiModelRouterService;
     private final ChatHistoryRepository chatHistoryRepository;
     private final UserService userService;
     private final PromptService promptService;
+    private final ChatSessionMetaRepository chatSessionMetaRepository;
 
     public ChatService(AiModelRouterService aiModelRouterService,
                        ChatHistoryRepository chatHistoryRepository,
                        UserService userService,
-                       PromptService promptService) {
+                       PromptService promptService,
+                       ChatSessionMetaRepository chatSessionMetaRepository) {
         this.aiModelRouterService = aiModelRouterService;
         this.chatHistoryRepository = chatHistoryRepository;
         this.userService = userService;
         this.promptService = promptService;
+        this.chatSessionMetaRepository = chatSessionMetaRepository;
     }
 
     /**
@@ -50,8 +60,10 @@ public class ChatService {
                 sessionId = UUID.randomUUID().toString();
             }
 
-            // Get conversation history for context
+            List<ChatHistory> fullHistory = chatHistoryRepository
+                    .findBySessionIdOrderByCreatedAtAsc(sessionId);
             String conversationHistory = getConversationHistory(sessionId);
+            String conversationSummary = getConversationSummaryText(sessionId, fullHistory);
 
             // Build the appropriate prompt based on subject type
             String fullPrompt;
@@ -60,7 +72,7 @@ public class ChatService {
             if (request.isOptionalSubject()) {
                 // Use optional subject prompt
                 fullPrompt = promptService.buildOptionalSubjectPrompt(
-                        user, conversationHistory, request.getMessage());
+                        user, conversationSummary, conversationHistory, request.getMessage());
                 subjectName = user.getOptionalSubject().getDisplayName();
             } else {
                 // Use specific GS subject prompt
@@ -68,7 +80,7 @@ public class ChatService {
                         ? request.getSubject()
                         : Subject.GENERAL;
                 fullPrompt = promptService.buildSubjectPrompt(
-                        user, subject, conversationHistory, request.getMessage());
+                        user, subject, conversationSummary, conversationHistory, request.getMessage());
                 subjectName = subject.getDisplayName();
             }
 
@@ -80,7 +92,7 @@ public class ChatService {
                     request.getSubject(), "USER", request.getMessage());
 
             // Call AI model
-            String aiResponse = aiModelRouterService.generate(user, fullPrompt);
+            String aiResponse = aiModelRouterService.generate(user, fullPrompt, request.getLocalModelName());
 
             // Save AI response to history
             saveChatHistory(user.getId(), sessionId,
@@ -94,15 +106,16 @@ public class ChatService {
             return ChatResponse.success(aiResponse, sessionId, subjectName);
 
         } catch (Exception e) {
+            String userMessage = classifyChatError(e);
             logger.error("Error in chat service: {}", e.getMessage(), e);
-            return ChatResponse.error(
-                    "Sorry, I encountered an error. Please try again. " +
-                            "Check your AI model configuration. Error: " + e.getMessage());
+            return ChatResponse.error(userMessage);
         }
     }
 
     /**
-     * Get conversation history for a session (last 10 messages)
+     * Get conversation history for a session.
+     * When messages exceed SUMMARIZE_THRESHOLD, earlier messages are condensed
+     * into a summary and only the most recent CONTEXT_WINDOW messages are included.
      */
     private String getConversationHistory(String sessionId) {
         List<ChatHistory> history = chatHistoryRepository
@@ -110,14 +123,97 @@ public class ChatService {
 
         if (history.isEmpty()) return "";
 
-        // Take last 10 messages for context window management
-        int start = Math.max(0, history.size() - 10);
+        // Trigger summarization if needed
+        getOrCreateConversationSummary(sessionId, history);
+
+        // Take last CONTEXT_WINDOW messages
+        int start = Math.max(0, history.size() - CONTEXT_WINDOW);
         return history.subList(start, history.size()).stream()
                 .map(msg -> {
                     String role = msg.getRole().equals("USER") ? "Student" : "Mentor";
                     return role + ": " + msg.getContent();
                 })
                 .collect(Collectors.joining("\n"));
+    }
+
+    /**
+     * Get the stored conversation summary text for a session (if any).
+     */
+    private String getConversationSummaryText(String sessionId, List<ChatHistory> history) {
+        if (history.size() < SUMMARIZE_THRESHOLD) {
+            return null;
+        }
+        Optional<ChatSessionMeta> meta = chatSessionMetaRepository.findBySessionId(sessionId);
+        return meta.map(ChatSessionMeta::getConversationSummary).orElse(null);
+    }
+
+    /**
+     * Create or retrieve conversation summary for long sessions.
+     */
+    private String getOrCreateConversationSummary(String sessionId, List<ChatHistory> history) {
+        if (history.size() < SUMMARIZE_THRESHOLD) {
+            return null;
+        }
+
+        Optional<ChatSessionMeta> existing = chatSessionMetaRepository.findBySessionId(sessionId);
+        if (existing.isPresent() && existing.get().getConversationSummary() != null) {
+            return existing.get().getConversationSummary();
+        }
+
+        // Create summary from early messages (those NOT in the context window)
+        int summaryEnd = Math.max(0, history.size() - SUMMARIZE_KEEP);
+        if (summaryEnd == 0) return null;
+
+        String messagesToSummarize = history.subList(0, summaryEnd).stream()
+                .map(msg -> {
+                    String role = msg.getRole().equals("USER") ? "Student" : "Mentor";
+                    return role + ": " + msg.getContent();
+                })
+                .collect(Collectors.joining("\n"));
+
+        String summaryPrompt = "Summarize the following UPSC tutoring conversation in 3-5 lines. " +
+                "Focus on key topics discussed and any learning gaps identified. " +
+                "Keep it concise:\n\n" + messagesToSummarize;
+
+        try {
+            User systemUser = new User();
+            systemUser.setUsername("system");
+            String summary = aiModelRouterService.generate(systemUser, summaryPrompt);
+
+            ChatSessionMeta meta = new ChatSessionMeta();
+            meta.setSessionId(sessionId);
+            meta.setConversationSummary(summary);
+            chatSessionMetaRepository.save(meta);
+
+            return summary;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Classify an exception into a user-friendly error message.
+     */
+    private String classifyChatError(Exception e) {
+        String msg = e.getMessage() != null ? e.getMessage().toLowerCase() : "";
+
+        if (msg.contains("timeout") || msg.contains("timed out") || e instanceof java.util.concurrent.TimeoutException) {
+            return "The AI model took too long to respond. Try a shorter question, or switch to a faster model in AI Settings.";
+        }
+
+        if (msg.contains("429") || msg.contains("rate limit") || msg.contains("too many requests")) {
+            return "Too many requests. Please wait 30 seconds and try again.";
+        }
+
+        if (msg.contains("connection") || msg.contains("refused") || msg.contains("unreachable")) {
+            return "Cannot connect to the AI model. If using Ollama, make sure it's running on http://localhost:11434. Otherwise, check your API key in AI Settings.";
+        }
+
+        if ((msg.contains("5") && msg.contains("status")) || msg.contains("server error")) {
+            return "The AI service is temporarily unavailable. Please try again in a moment.";
+        }
+
+        return "Sorry, I encountered an error. Please try again. Error: " + e.getMessage();
     }
 
     /**
