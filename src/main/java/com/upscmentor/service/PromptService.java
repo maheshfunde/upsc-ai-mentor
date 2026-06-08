@@ -39,7 +39,7 @@ public class PromptService {
         }
 
         prompt.append("<response_format>\n")
-              .append(SystemPrompts.RESPONSE_FORMAT_INSTRUCTIONS)
+              .append(SystemPrompts.STRUCTURED_OUTPUT_FORMAT)
               .append("</response_format>\n\n");
 
         prompt.append("<student>").append(userMessage).append("</student>\n<mentor>:");
@@ -74,7 +74,7 @@ public class PromptService {
         }
 
         prompt.append("<response_format>\n")
-              .append(SystemPrompts.RESPONSE_FORMAT_INSTRUCTIONS)
+              .append(SystemPrompts.STRUCTURED_OUTPUT_FORMAT)
               .append("</response_format>\n\n");
 
         prompt.append("<student>").append(userMessage).append("</student>\n<mentor>:");

@@ -183,10 +183,14 @@ public class ChatService {
             ChatSessionMeta meta = new ChatSessionMeta();
             meta.setSessionId(sessionId);
             meta.setConversationSummary(summary);
+            if (!history.isEmpty()) {
+                meta.setUserId(history.get(0).getUserId());
+            }
             chatSessionMetaRepository.save(meta);
 
             return summary;
         } catch (Exception e) {
+            logger.error("Failed to generate conversation summary for session {}: {}", sessionId, e.getMessage());
             return null;
         }
     }
