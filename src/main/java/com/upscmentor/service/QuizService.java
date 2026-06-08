@@ -101,21 +101,30 @@ public class QuizService {
         double percentage = (double) correctAnswers / totalQuestions * 100;
 
         String prompt = """
-                A UPSC aspirant just completed a quiz on %s.
-                
+                A UPSC aspirant just completed a Prelims-style MCQ quiz on %s.
+
                 Results:
                 - Correct: %d out of %d
                 - Score: %.1f%%
                 - Difficulty: %s
                 - Topic: %s
-                
-                Provide brief, encouraging feedback including:
-                1. Performance assessment
-                2. What to focus on for improvement
-                3. Suggested next steps
-                4. Motivation (if score is low) or challenge (if score is high)
-                
-                Keep it under 200 words.
+
+                UPSC Context:
+                - In actual Prelims, negative marking of 1/3rd applies (0.83 marks deducted per wrong answer)
+                - A score above 60%% in a quiz typically indicates Prelims-ready preparation
+                - A score below 40%% indicates need for foundational revision
+
+                Provide feedback in this structure:
+                1. 📊 Performance Assessment — compare score to UPSC Prelims cut-off trends
+                2. 🔍 Weak Areas Identified — what topics/concepts need revision
+                3. 📚 Recommended Action — specific next steps (NCERT revision, standard book chapter, PYQ practice)
+                4. 🎯 Score-Specific Guidance:
+                   - If below 40%%: Focus on NCERT foundation + concept building
+                   - If 40-60%%: Standard book revision + targeted PYQ practice
+                   - If 60-80%%: Test series integration + current affairs linkage
+                   - If above 80%%: Maintain consistency + full-length mock tests
+
+                Keep it under 200 words. Be constructive but honest about gaps.
                 """.formatted(
                 request.getSubject().getDisplayName(),
                 correctAnswers, totalQuestions, percentage,

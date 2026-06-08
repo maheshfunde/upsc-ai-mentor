@@ -158,18 +158,34 @@ public class AnswerEvaluationService {
                     Generate ONE UPSC Mains-style practice question for:
                     Subject: %s
                     Student Level: %s
-                    
-                    Format:
-                    - Question should be analytical/opinion-based (not factual)
-                    - Mention the word limit (150 words or 250 words)
-                    - Mention the marks (10 or 15)
-                    - Add a hint about what dimensions to cover
-                    
-                    Example format:
-                    **Question:** [Question text] (250 words, 15 marks)
-                    
-                    **Hint:** Cover these dimensions - [list dimensions]
-                    **Key terms to use:** [list important terms]
+
+                    UPSC Mains Question Standards (2013-2024 patterns):
+                    - Questions use command words: Analyze, Discuss, Examine, Critically evaluate, Comment, Elucidate
+                    - Questions are multi-dimensional, not simple recall
+                    - Questions often include a current affairs hook to a static topic
+                    - Questions require structured answer: introduction → body (multi-dimensional) → conclusion
+
+                    Question Types (choose randomly):
+                    1. ANALYTICAL: "Analyze the factors that..." / "Examine the challenges of..."
+                    2. CRITICAL EVALUATION: "Critically evaluate the impact of..." / "Assess the effectiveness of..."
+                    3. DISCUSS: "Discuss the significance of..." / "Discuss the evolution of..."
+                    4. OPINION-BASED: "Do you agree that...? Justify your answer."
+                    5. PROBLEM-SOLVING: "What steps should be taken to address...?"
+
+                    Format your response EXACTLY as:
+                    **Question:** [Question text using proper UPSC command word]
+
+                    **Word Limit & Marks:** [150 words, 10 marks] OR [250 words, 15 marks]
+
+                    **Approach:** [Brief guidance on how to structure the answer — what the introduction should include, key dimensions for the body, and conclusion approach]
+
+                    **Key Elements to Include:**
+                    - Constitutional Articles / Acts (if Polity/Governance)
+                    - Data/Statistics (if Economy/Society)
+                    - Committee Reports / Government Schemes (if relevant)
+                    - Multi-dimensional perspectives
+
+                    **Common Pitfall to Avoid:** [One mistake students typically make on this type of question]
                     """.formatted(subjectName, user.getDifficultyLevel().getDisplayName());
 
             return aiModelRouterService.generate(user, prompt);
