@@ -51,3 +51,28 @@ upsc:
   mains-answer-words: 150
   essay-word-limit: 1200
 
+# RAG / Knowledge Base Configuration
+rag:
+  enabled: true
+  chromadb:
+    url: http://localhost:8000
+    collection: upsc_knowledge
+  embedding:
+    model: nomic-embed-text
+    provider: ollama
+    base-url: ${ai.ollama.base-url}
+  chunking:
+    size: 1000
+    overlap: 200
+  retrieval:
+    top-k: 15
+    final-k: 5
+    vector-weight: 0.6
+    keyword-weight: 0.4
+  upload:
+    max-size-mb: 50
+    allowed-types: pdf,txt,md,png,jpg,jpeg
+    storage-path: ./data/uploads
+  ocr:
+    enabled: true
+    language: eng
