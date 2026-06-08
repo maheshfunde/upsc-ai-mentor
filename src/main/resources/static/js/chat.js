@@ -320,28 +320,152 @@ async function loadSelectedOldChat() {
     await loadSessionHistory();
 }
 
+// ============================================
+// ENHANCED MESSAGE RENDERING
+// ============================================
+
+// Icon mapping for AI response section headers
+const SECTION_ICONS = {
+    "concept": "💡",
+    "deep dive": "📖",
+    "upsc connection": "🎯",
+    "common mistake": "⚠️",
+    "try this": "🏋️",
+    "summary": "📋",
+    "key points": "🔑",
+    "examples": "📌",
+    "exam relevance": "📝",
+    "prelims focus": "🔵",
+    "mains focus": "🟠",
+    "quick revision": "⚡",
+    "conclusion": "🏁",
+    "introduction": "📝",
+    "background": "📜",
+    "analysis": "🔍",
+    "recommendations": "💡",
+    "upsc tip": "💬",
+    "important": "🔥",
+    "note": "📝",
+};
+
+function getSectionIcon(heading) {
+    const lower = heading.toLowerCase().trim();
+    for (const [key, icon] of Object.entries(SECTION_ICONS)) {
+        if (lower.includes(key)) return icon;
+    }
+    return "📘";
+}
+
+function enhanceAssistantResponse(html) {
+    // Parse the rendered HTML
+    const temp = document.createElement("div");
+    temp.innerHTML = html;
+
+    // Enhance headings with icons and section classes
+    temp.querySelectorAll("h1, h2, h3, h4").forEach((heading) => {
+        const text = heading.textContent.trim();
+        const icon = getSectionIcon(text);
+
+        heading.innerHTML = `<span class="section-icon">${icon}</span> ${text}`;
+        heading.classList.add("response-heading");
+
+        // Add section class based on content
+        const lowerText = text.toLowerCase();
+        if (lowerText.includes("upsc") || lowerText.includes("prelims") || lowerText.includes("mains")) {
+            heading.parentElement?.classList.add("section-upsc");
+        }
+    });
+
+    // Enhance lists with custom bullets
+    temp.querySelectorAll("ul li").forEach((li) => {
+        li.classList.add("custom-list-item");
+    });
+
+    temp.querySelectorAll("ol li").forEach((li) => {
+        li.classList.add("ordered-list-item");
+    });
+
+    // Enhance tables
+    temp.querySelectorAll("table").forEach((table) => {
+        table.classList.add("response-table");
+        const wrapper = document.createElement("div");
+        wrapper.className = "table-wrapper";
+        table.parentNode.insertBefore(wrapper, table);
+        wrapper.appendChild(table);
+    });
+
+    // Enhance code blocks
+    temp.querySelectorAll("pre code").forEach((code) => {
+        const pre = code.parentElement;
+        if (pre.tagName === "PRE") {
+            pre.classList.add("code-block");
+            const lang = code.className.replace("language-", "").replace("hljs ", "");
+            if (lang) {
+                pre.dataset.lang = lang;
+            }
+        }
+    });
+
+    // Enhance blockquotes
+    temp.querySelectorAll("blockquote").forEach((bq) => {
+        bq.classList.add("response-quote");
+    });
+
+    // Add response metadata
+    const wordCount = temp.textContent.trim().split(/\s+/).length;
+    const readTime = Math.max(1, Math.ceil(wordCount / 200));
+
+    return {
+        html: temp.innerHTML,
+        wordCount,
+        readTime
+    };
+}
+
 function appendChatMessage(role, content) {
     const messageDiv = document.createElement("div");
     messageDiv.className = `message ${role}`;
 
-    const avatar = role === "user" ? "U" : "AI";
-    const renderedContent = role === "assistant"
-        ? DOMPurify.sanitize(marked.parse(content), {ADD_ATTR: ['target']})
-        : escapeHtml(content);
+    const avatar = role === "user" ? "U" : "🤖";
 
     let copyButtonHTML = "";
+    let metadataHTML = "";
+    let renderedContent;
+
     if (role === "assistant") {
-        copyButtonHTML = `<button class="message-copy-btn" title="Copy response" onclick="copyMessage(this)">📋</button>`;
+        const enhanced = enhanceAssistantResponse(
+            DOMPurify.sanitize(marked.parse(content), {ADD_ATTR: ['target']})
+        );
+        renderedContent = enhanced.html;
+
+        copyButtonHTML = `<button class="message-copy-btn" title="Copy response" onclick="copyMessage(this)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+        </button>`;
+
+        metadataHTML = `<div class="message-meta">
+            <span class="meta-item">📝 ${enhanced.wordCount} words</span>
+            <span class="meta-item">⏱️ ${enhanced.readTime} min read</span>
+            <span class="meta-item">${formatTimestamp()}</span>
+        </div>`;
+    } else {
+        renderedContent = escapeHtml(content);
     }
 
     messageDiv.innerHTML = `
-        ${copyButtonHTML}
         <div class="message-avatar">${avatar}</div>
-        <div class="message-content">${renderedContent}</div>
+        <div class="message-content">
+            ${copyButtonHTML}
+            <div class="message-text">${renderedContent}</div>
+            ${metadataHTML}
+        </div>
     `;
 
     chatMessages.appendChild(messageDiv);
 
+    // Apply syntax highlighting to code blocks
     messageDiv.querySelectorAll("pre code").forEach((block) => {
         if (window.hljs) {
             window.hljs.highlightElement(block);
@@ -351,15 +475,23 @@ function appendChatMessage(role, content) {
     scrollToBottom();
 }
 
+function formatTimestamp() {
+    const now = new Date();
+    return now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+}
+
 function showTypingIndicator() {
     const id = `typing-${Date.now()}`;
     const typingDiv = document.createElement("div");
     typingDiv.id = id;
     typingDiv.className = "message assistant";
     typingDiv.innerHTML = `
-        <div class="message-avatar">AI</div>
+        <div class="message-avatar">🤖</div>
         <div class="message-content">
-            <div class="typing-indicator"><span></span><span></span><span></span></div>
+            <div class="typing-indicator">
+                <span></span><span></span><span></span>
+            </div>
+            <span class="typing-text">UPSC Guru is thinking...</span>
         </div>
     `;
     chatMessages.appendChild(typingDiv);
@@ -382,19 +514,21 @@ function scrollToBottom() {
 }
 
 async function copyMessage(btn) {
-    const messageContent = btn.closest(".message").querySelector(".message-content");
+    const messageContent = btn.closest(".message").querySelector(".message-text");
     const text = messageContent.innerText;
 
     try {
         await navigator.clipboard.writeText(text);
-        btn.textContent = "✅";
+        btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
         btn.classList.add("copied");
         setTimeout(() => {
-            btn.textContent = "📋";
+            btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>`;
             btn.classList.remove("copied");
         }, 2000);
     } catch (err) {
-        // Fallback for older browsers
         const textarea = document.createElement("textarea");
         textarea.value = text;
         document.body.appendChild(textarea);
@@ -424,14 +558,14 @@ function getWelcomeHTML() {
 
     return `
         <div class="welcome-message">
-            <div class="welcome-icon">AI</div>
+            <div class="welcome-icon">🎓</div>
             <h2>Welcome to UPSC AI Tutor</h2>
             <p>Ask questions on any UPSC topic and get exam-focused guidance.</p>
             <div class="quick-actions">
-                <button class="quick-btn" onclick="sendQuickMessage('Explain Fundamental Rights under Indian Constitution')">Fundamental Rights</button>
-                <button class="quick-btn" onclick="sendQuickMessage('What are important economy topics for UPSC prelims?')">Economy Topics</button>
-                <button class="quick-btn" onclick="sendQuickMessage('Explain federalism in India with examples')">Federalism</button>
-                <button class="quick-btn" onclick="sendQuickMessage('Give me a strategy for ${optionalName}')">Optional Strategy</button>
+                <button class="quick-btn" onclick="sendQuickMessage('Explain Fundamental Rights under Indian Constitution')">⚖️ Fundamental Rights</button>
+                <button class="quick-btn" onclick="sendQuickMessage('What are important economy topics for UPSC prelims?')">💰 Economy Topics</button>
+                <button class="quick-btn" onclick="sendQuickMessage('Explain federalism in India with examples')">🏛️ Federalism</button>
+                <button class="quick-btn" onclick="sendQuickMessage('Give me a strategy for ${optionalName}')">📚 Optional Strategy</button>
             </div>
         </div>
     `;

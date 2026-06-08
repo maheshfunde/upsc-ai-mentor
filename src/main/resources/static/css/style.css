@@ -995,41 +995,48 @@ body.sidebar-collapsed .quiz-section {
     scroll-behavior: smooth;
 }
 
-/* Message Bubbles - Same as chatbot project */
+/* ============================================
+   MESSAGE BUBBLES - ENHANCED
+   ============================================ */
+
 .message {
     display: flex;
-    gap: 12px;
-    margin-bottom: 20px;
-    max-width: 800px;
-    animation: fadeIn 0.3s ease;
+    gap: 14px;
+    margin-bottom: 24px;
+    max-width: 900px;
+    animation: messageSlide 0.4s ease;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
+@keyframes messageSlide {
+    from { opacity: 0; transform: translateY(16px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
 .message.user { flex-direction: row-reverse; margin-left: auto; }
 
 .message-avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     flex-shrink: 0;
     background: var(--bg-input);
     border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
-.message.user .message-avatar { background: var(--accent); border: none; }
+.message.user .message-avatar {
+    background: linear-gradient(135deg, var(--accent), #4338ca);
+    border: none;
+}
 
 .message-content {
-    padding: 12px 16px;
-    border-radius: 12px;
-    max-width: 75%;
+    padding: 0;
+    border-radius: 16px;
+    max-width: 80%;
     line-height: 1.7;
     font-size: 0.95rem;
     overflow-wrap: anywhere;
@@ -1037,37 +1044,47 @@ body.sidebar-collapsed .quiz-section {
 }
 
 .message.user .message-content {
-    background: var(--accent);
+    background: linear-gradient(135deg, var(--accent), #4338ca);
     color: white;
-    border-bottom-right-radius: 4px;
+    border-bottom-right-radius: 6px;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
 
 .message.assistant .message-content {
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-bottom-left-radius: 4px;
-}
-
-/* Copy button for AI messages */
-.message.assistant {
+    border-bottom-left-radius: 6px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
     position: relative;
 }
 
+/* Message text wrapper inside content */
+.message-text {
+    padding: 16px 20px;
+    padding-top: 16px;
+    padding-right: 48px; /* Space for copy button */
+}
+
+.message.user .message-text {
+    padding: 12px 16px;
+    padding-right: 16px;
+}
+
+/* Copy button - SVG icon style */
 .message-copy-btn {
     position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 28px;
-    height: 28px;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 8px;
     background: var(--bg-input);
     color: var(--text-secondary);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.75rem;
     opacity: 0;
     transition: all 0.2s;
     z-index: 1;
@@ -1081,93 +1098,257 @@ body.sidebar-collapsed .quiz-section {
     border-color: var(--accent);
     color: var(--accent);
     background: var(--accent-light);
+    transform: scale(1.05);
 }
 
 .message-copy-btn.copied {
     border-color: var(--success);
     color: var(--success);
     background: rgba(34, 197, 94, 0.15);
+    opacity: 1;
 }
 
-/* Ensure message-content wrapper allows space for copy button */
-.message.assistant .message-content {
-    position: relative;
-    padding-right: 40px;
+/* Message metadata (word count, read time, timestamp) */
+.message-meta {
+    display: flex;
+    gap: 12px;
+    padding: 8px 20px 12px;
+    border-top: 1px solid var(--border);
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 0 0 16px 0;
 }
 
-.message-content pre {
-    background: #0d1117;
-    border-radius: 8px;
-    padding: 12px;
-    margin: 8px 0;
-    overflow-x: auto;
-    max-width: 100%;
+.meta-item {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
-.message-content code { font-size: 0.85rem; }
-.message-content p { margin-bottom: 8px; }
-.message-content p:last-child { margin-bottom: 0; }
-.message-content ul, .message-content ol { margin-left: 20px; margin-bottom: 8px; }
-.message-content li { margin-bottom: 4px; }
-.message-content strong { color: var(--accent); }
-.message-content h1,
-.message-content h2,
-.message-content h3,
-.message-content h4 {
-    margin: 10px 0 8px;
-    line-height: 1.35;
+/* ============================================
+   BEAUTIFUL AI RESPONSE SECTIONS
+   ============================================ */
+
+/* Section headings with icons */
+.message-text .response-heading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 20px 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 1.05rem;
+}
+
+.message-text .response-heading:first-child {
+    margin-top: 0;
+}
+
+.message-text .section-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+/* UPSC Connection section - saffron accent */
+.section-upsc .response-heading {
+    border-bottom-color: var(--saffron);
+    color: var(--saffron);
+}
+
+/* Section content styling */
+.message-text h1,
+.message-text h2,
+.message-text h3,
+.message-text h4,
+.message-text h5,
+.message-text h6 {
+    margin: 16px 0 10px;
     color: #c7d2fe;
+    font-weight: 600;
 }
-.message-content h1 { font-size: 1.1rem; }
-.message-content h2 { font-size: 1.05rem; }
-.message-content h3,
-.message-content h4 { font-size: 1rem; }
-.message-content blockquote {
+
+.message-text h1 { font-size: 1.2rem; }
+.message-text h2 { font-size: 1.1rem; }
+.message-text h3 { font-size: 1.05rem; }
+.message-text h4, .message-text h5, .message-text h6 { font-size: 1rem; }
+
+/* Enhanced lists */
+.message-text ul,
+.message-text ol {
     margin: 10px 0;
-    padding: 8px 12px;
-    border-left: 3px solid var(--accent);
-    background: rgba(99, 102, 241, 0.08);
-    border-radius: 6px;
+    padding-left: 24px;
+}
+
+.message-text ul li {
+    margin-bottom: 8px;
+    position: relative;
+    padding-left: 8px;
+}
+
+.message-text ol li {
+    margin-bottom: 8px;
+    padding-left: 4px;
+}
+
+.message-text ul li::marker {
+    color: var(--accent);
+    font-size: 1.1em;
+}
+
+.message-text ol li::marker {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+/* Strong/bold text */
+.message-text strong {
+    color: #e0e7ff;
+    font-weight: 600;
+}
+
+/* Paragraphs */
+.message-text p {
+    margin-bottom: 12px;
+    line-height: 1.75;
+}
+
+.message-text p:last-child {
+    margin-bottom: 0;
+}
+
+/* Blockquotes - UPSC Tips */
+.message-text blockquote {
+    margin: 16px 0;
+    padding: 12px 16px;
+    border-left: 4px solid var(--accent);
+    background: rgba(99, 102, 241, 0.1);
+    border-radius: 0 8px 8px 0;
     color: var(--text-primary);
 }
-.message-content table {
+
+.message-text blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+/* Code blocks */
+.message-text pre {
+    background: #0d1117;
+    border-radius: 10px;
+    padding: 16px;
+    margin: 12px 0;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    position: relative;
+}
+
+.message-text pre code {
+    font-size: 0.85rem;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+    line-height: 1.6;
+}
+
+.message-text code {
+    background: rgba(99, 102, 241, 0.15);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    color: #a5b4fc;
+}
+
+.message-text pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+}
+
+/* Tables */
+.table-wrapper {
+    overflow-x: auto;
+    margin: 12px 0;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+.message-text table {
     width: 100%;
     border-collapse: collapse;
-    margin: 10px 0;
-    display: block;
-    overflow-x: auto;
-}
-.message-content th,
-.message-content td {
-    border: 1px solid var(--border);
-    padding: 8px 10px;
-    text-align: left;
-    white-space: nowrap;
-    font-size: 0.85rem;
-}
-.message-content th {
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-}
-.message-content hr {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 12px 0;
+    font-size: 0.88rem;
 }
 
-/* Typing Indicator */
-.typing-indicator { display: flex; gap: 4px; padding: 8px 0; }
+.message-text th {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-weight: 600;
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 2px solid var(--accent);
+    white-space: nowrap;
+}
+
+.message-text td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+}
+
+.message-text tr:last-child td {
+    border-bottom: none;
+}
+
+.message-text tr:hover td {
+    background: rgba(99, 102, 241, 0.05);
+}
+
+/* Horizontal rules */
+.message-text hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border), transparent);
+    margin: 20px 0;
+}
+
+/* Links */
+.message-text a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+}
+
+.message-text a:hover {
+    border-bottom-color: var(--accent);
+}
+
+/* Typing indicator enhanced */
+.typing-indicator {
+    display: inline-flex;
+    gap: 4px;
+    padding: 4px 0;
+}
+
 .typing-indicator span {
-    width: 8px; height: 8px;
-    background: var(--text-secondary);
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
     border-radius: 50%;
     animation: typing 1.4s infinite;
 }
+
 .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
 .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
 @keyframes typing {
-    0%, 60%, 100% { transform: translateY(0); }
-    30% { transform: translateY(-8px); }
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-8px); opacity: 1; }
+}
+
+.typing-text {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    margin-left: 8px;
 }
 
 /* Chat Input */
@@ -1909,79 +2090,6 @@ textarea:focus,
     background: var(--accent-light);
     color: var(--accent);
     border-color: var(--accent);
-}
-
-/* ============================================
-   ENHANCED OUTPUT FORMATTING
-   ============================================ */
-
-/* AI response content sections */
-.message-content .section-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 16px 0 10px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid var(--border);
-}
-
-.message-content .section-header:first-child {
-    margin-top: 0;
-}
-
-.message-content .section-icon {
-    font-size: 1.1rem;
-}
-
-/* Structured response sections */
-.message-content .response-section {
-    margin: 12px 0;
-    padding: 12px;
-    background: var(--bg-input);
-    border-radius: 10px;
-    border-left: 3px solid var(--accent);
-}
-
-.message-content .response-section.upsc-connection {
-    border-left-color: var(--saffron);
-    background: rgba(255, 153, 51, 0.08);
-}
-
-.message-content .response-section.try-this {
-    border-left-color: var(--success);
-    background: rgba(34, 197, 94, 0.08);
-}
-
-.message-content .response-section.common-mistake {
-    border-left-color: var(--error);
-    background: rgba(239, 68, 68, 0.08);
-}
-
-/* Info boxes */
-.info-box {
-    padding: 12px 16px;
-    border-radius: 10px;
-    margin: 12px 0;
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-}
-
-.info-box.tip {
-    background: rgba(99, 102, 241, 0.1);
-    border: 1px solid var(--accent);
-    color: var(--accent-hover);
-}
-
-.info-box.warning {
-    background: rgba(245, 158, 11, 0.1);
-    border: 1px solid var(--warning);
-    color: var(--warning);
-}
-
-.info-box-icon {
-    font-size: 1.2rem;
-    flex-shrink: 0;
 }
 
 /* ============================================
