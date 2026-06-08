@@ -2,6 +2,7 @@ package com.upscmentor.service;
 
 import com.upscmentor.model.entity.User;
 import dev.langchain4j.model.chat.ChatLanguageModel;
+import dev.langchain4j.model.ollama.OllamaChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,22 @@ public class AiModelRouterService {
     }
 
     public String generate(User user, String prompt) {
+        return generate(user, prompt, null);
+    }
+
+    public String generate(User user, String prompt, String requestedLocalModelName) {
+        String localModelOverride = normalizeModelName(requestedLocalModelName);
+        if (localModelOverride != null) {
+            logger.info("Using requested local Ollama model '{}' for user '{}'",
+                    localModelOverride, user.getUsername());
+            return OllamaChatModel.builder()
+                    .baseUrl("http://localhost:11434")
+                    .modelName(localModelOverride)
+                    .timeout(Duration.ofSeconds(180))
+                    .build()
+                    .generate(prompt);
+        }
+
         if (hasOnlineConfig(user)) {
             String apiKey = user.getOpenAiApiKey().trim();
             boolean isGroq = apiKey.startsWith("gsk_");
@@ -64,8 +81,15 @@ public class AiModelRouterService {
             }
         }
 
-        logger.info("Using local Ollama model for user '{}'", user.getUsername());
+        logger.info("Using local Ollama model '{}' for user '{}'", "llama3:8b", user.getUsername());
         return localModel.generate(prompt);
+    }
+
+    private String normalizeModelName(String modelName) {
+        if (modelName == null || modelName.isBlank()) {
+            return null;
+        }
+        return modelName.trim();
     }
 
     private boolean hasOnlineConfig(User user) {

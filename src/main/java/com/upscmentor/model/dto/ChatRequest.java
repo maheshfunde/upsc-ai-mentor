@@ -14,6 +14,7 @@ public class ChatRequest {
     private String sessionId;
     private Long userId;
     private boolean isOptionalSubject;
+    private String localModelName;
 
     // Getters and Setters
     public String getMessage() { return message; }
@@ -26,4 +27,6 @@ public class ChatRequest {
     public void setUserId(Long userId) { this.userId = userId; }
     public boolean isOptionalSubject() { return isOptionalSubject; }
     public void setOptionalSubject(boolean optionalSubject) { isOptionalSubject = optionalSubject; }
+    public String getLocalModelName() { return localModelName; }
+    public void setLocalModelName(String localModelName) { this.localModelName = localModelName; }
 }
