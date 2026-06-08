@@ -24,8 +24,14 @@ public class ChatService {
 
     private static final Logger logger = LoggerFactory.getLogger(ChatService.class);
 
+    // Keep last 20 messages in context for coherent conversation
     private static final int CONTEXT_WINDOW = 20;
+
+    // Trigger summarization when history exceeds 25 messages
+    // (provides 5-message buffer before context window fills)
     private static final int SUMMARIZE_THRESHOLD = 25;
+
+    // After summarization, retain 15 most recent messages alongside summary
     private static final int SUMMARIZE_KEEP = 15;
 
     private final AiModelRouterService aiModelRouterService;
@@ -65,24 +71,9 @@ public class ChatService {
             String conversationHistory = getConversationHistory(sessionId);
             String conversationSummary = getConversationSummaryText(sessionId, fullHistory);
 
-            // Build the appropriate prompt based on subject type
-            String fullPrompt;
-            String subjectName;
-
-            if (request.isOptionalSubject()) {
-                // Use optional subject prompt
-                fullPrompt = promptService.buildOptionalSubjectPrompt(
-                        user, conversationSummary, conversationHistory, request.getMessage());
-                subjectName = user.getOptionalSubject().getDisplayName();
-            } else {
-                // Use specific GS subject prompt
-                Subject subject = request.getSubject() != null
-                        ? request.getSubject()
-                        : Subject.GENERAL;
-                fullPrompt = promptService.buildSubjectPrompt(
-                        user, subject, conversationSummary, conversationHistory, request.getMessage());
-                subjectName = subject.getDisplayName();
-            }
+            PromptResult promptResult = buildFullPrompt(request, user, conversationSummary, conversationHistory);
+            String fullPrompt = promptResult.prompt();
+            String subjectName = promptResult.subjectName();
 
             logger.info("Processing chat for user: {}, subject: {}, session: {}",
                     user.getUsername(), subjectName, sessionId);
@@ -281,4 +272,36 @@ public class ChatService {
     public String createNewSession() {
         return UUID.randomUUID().toString();
     }
+
+    /**
+     * Build the complete prompt for AI generation based on subject type.
+     */
+    private PromptResult buildFullPrompt(ChatRequest request, User user,
+                                         String conversationSummary,
+                                         String conversationHistory) {
+        String fullPrompt;
+        String subjectName;
+
+        if (request.isOptionalSubject()) {
+            fullPrompt = promptService.buildOptionalSubjectPrompt(
+                    user, conversationSummary, conversationHistory, request.getMessage());
+            subjectName = user.getOptionalSubject() != null
+                    ? user.getOptionalSubject().getDisplayName()
+                    : "Optional Subject";
+        } else {
+            Subject subject = request.getSubject() != null
+                    ? request.getSubject()
+                    : Subject.GENERAL;
+            fullPrompt = promptService.buildSubjectPrompt(
+                    user, subject, conversationSummary, conversationHistory, request.getMessage());
+            subjectName = subject.getDisplayName();
+        }
+
+        return new PromptResult(fullPrompt, subjectName);
+    }
+
+    /**
+     * Simple record to hold prompt + subject name together.
+     */
+    private record PromptResult(String prompt, String subjectName) {}
 }

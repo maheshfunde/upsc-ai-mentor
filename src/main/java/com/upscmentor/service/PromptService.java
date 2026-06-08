@@ -23,7 +23,10 @@ public class PromptService {
         prompt.append("<student_profile>\n");
         prompt.append("- Name: ").append(user.getName()).append("\n");
         prompt.append("- Preparation Level: ").append(user.getDifficultyLevel().getDisplayName()).append("\n");
-        prompt.append("- Optional Subject: ").append(user.getOptionalSubject().getDisplayName()).append("\n");
+        prompt.append("- Optional Subject: ").append(
+                user.getOptionalSubject() != null
+                    ? user.getOptionalSubject().getDisplayName()
+                    : "Not selected").append("\n");
         prompt.append("- Target Year: ").append(user.getTargetYear()).append("\n");
         if (user.getWeakSubjects() != null) {
             prompt.append("- Weak Areas: ").append(user.getWeakSubjects()).append("\n");
@@ -53,6 +56,10 @@ public class PromptService {
     public String buildOptionalSubjectPrompt(User user, String conversationSummary,
                                              String conversationHistory, String userMessage) {
 
+        if (user.getOptionalSubject() == null) {
+            throw new IllegalStateException("User has no optional subject configured");
+        }
+
         String systemPrompt = SystemPrompts.getOptionalSubjectPrompt(
                 user.getOptionalSubject().getDisplayName());
 
@@ -61,7 +68,10 @@ public class PromptService {
 
         prompt.append("<student_profile>\n");
         prompt.append("- Name: ").append(user.getName()).append("\n");
-        prompt.append("- Optional Subject: ").append(user.getOptionalSubject().getDisplayName()).append("\n");
+        prompt.append("- Optional Subject: ").append(
+                user.getOptionalSubject() != null
+                    ? user.getOptionalSubject().getDisplayName()
+                    : "Not selected").append("\n");
         prompt.append("- Preparation Level: ").append(user.getDifficultyLevel().getDisplayName()).append("\n");
         prompt.append("</student_profile>\n\n");
 

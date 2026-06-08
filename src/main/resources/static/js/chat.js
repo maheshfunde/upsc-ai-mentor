@@ -302,7 +302,7 @@ function appendChatMessage(role, content) {
 
     const avatar = role === "user" ? "U" : "AI";
     const renderedContent = role === "assistant"
-        ? marked.parse(content)
+        ? DOMPurify.sanitize(marked.parse(content), {ADD_ATTR: ['target']})
         : escapeHtml(content);
 
     let copyButtonHTML = "";
