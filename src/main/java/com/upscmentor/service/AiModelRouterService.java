@@ -82,6 +82,13 @@ public class AiModelRouterService {
         return ollamaModelFactory.create(localModelName).generate(prompt);
     }
 
+    private String normalizeModelName(String modelName) {
+        if (modelName == null || modelName.isBlank()) {
+            return null;
+        }
+        return modelName.trim();
+    }
+
     private boolean hasOnlineConfig(User user) {
         return user != null
                 && user.getOpenAiApiKey() != null
@@ -122,12 +129,5 @@ public class AiModelRouterService {
             return null;
         }
         return normalizeModelName(user.getLocalModelName());
-    }
-
-    private String normalizeModelName(String modelName) {
-        if (modelName == null || modelName.isBlank()) {
-            return null;
-        }
-        return modelName.trim();
     }
 }

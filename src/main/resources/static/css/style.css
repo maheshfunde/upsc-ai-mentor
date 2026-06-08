@@ -1048,6 +1048,53 @@ body.sidebar-collapsed .quiz-section {
     border-bottom-left-radius: 4px;
 }
 
+/* Copy button for AI messages */
+.message.assistant {
+    position: relative;
+}
+
+.message-copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg-input);
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    opacity: 0;
+    transition: all 0.2s;
+    z-index: 1;
+}
+
+.message.assistant:hover .message-copy-btn {
+    opacity: 1;
+}
+
+.message-copy-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-light);
+}
+
+.message-copy-btn.copied {
+    border-color: var(--success);
+    color: var(--success);
+    background: rgba(34, 197, 94, 0.15);
+}
+
+/* Ensure message-content wrapper allows space for copy button */
+.message.assistant .message-content {
+    position: relative;
+    padding-right: 40px;
+}
+
 .message-content pre {
     background: #0d1117;
     border-radius: 8px;

@@ -326,10 +326,16 @@ function appendChatMessage(role, content) {
 
     const avatar = role === "user" ? "U" : "AI";
     const renderedContent = role === "assistant"
-        ? marked.parse(content)
+        ? DOMPurify.sanitize(marked.parse(content), {ADD_ATTR: ['target']})
         : escapeHtml(content);
 
+    let copyButtonHTML = "";
+    if (role === "assistant") {
+        copyButtonHTML = `<button class="message-copy-btn" title="Copy response" onclick="copyMessage(this)">📋</button>`;
+    }
+
     messageDiv.innerHTML = `
+        ${copyButtonHTML}
         <div class="message-avatar">${avatar}</div>
         <div class="message-content">${renderedContent}</div>
     `;
@@ -375,6 +381,35 @@ function scrollToBottom() {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
+async function copyMessage(btn) {
+    const messageContent = btn.closest(".message").querySelector(".message-content");
+    const text = messageContent.innerText;
+
+    try {
+        await navigator.clipboard.writeText(text);
+        btn.textContent = "✅";
+        btn.classList.add("copied");
+        setTimeout(() => {
+            btn.textContent = "📋";
+            btn.classList.remove("copied");
+        }, 2000);
+    } catch (err) {
+        // Fallback for older browsers
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+        btn.textContent = "✅";
+        btn.classList.add("copied");
+        setTimeout(() => {
+            btn.textContent = "📋";
+            btn.classList.remove("copied");
+        }, 2000);
+    }
+}
+
 function escapeHtml(text) {
     const div = document.createElement("div");
     div.textContent = text;
@@ -401,3 +436,5 @@ function getWelcomeHTML() {
         </div>
     `;
 }
+
+window.copyMessage = copyMessage;
