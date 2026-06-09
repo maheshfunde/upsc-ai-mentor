@@ -46,6 +46,7 @@ async function initChat() {
     }
 
     await loadSessionList();
+    await loadKbIndicator();
 }
 
 function setupChatEventListeners() {
@@ -182,7 +183,7 @@ async function sendChatMessage() {
                 saveCurrentSession();
                 await loadSessionList();
             }
-            appendChatMessage("assistant", data.message);
+            appendChatMessage("assistant", data.message, data.sources);
         } else {
             appendChatMessage("assistant", `Error: ${data.error || "Something went wrong."}`);
         }
@@ -431,7 +432,7 @@ function enhanceAssistantResponse(html) {
     };
 }
 
-function appendChatMessage(role, content) {
+function appendChatMessage(role, content, sources) {
     const messageDiv = document.createElement("div");
     messageDiv.className = `message ${role}`;
 
@@ -459,6 +460,11 @@ function appendChatMessage(role, content) {
             <span class="meta-item">⏱️ ${enhanced.readTime} min read</span>
             <span class="meta-item">${formatTimestamp()}</span>
         </div>`;
+
+        let sourcesHTML = '';
+        if (sources && sources.length > 0) {
+            sourcesHTML = `<div class="source-badge">📚 Sources: ${sources.map(s => `<span class="source-tag">${escapeHtml(s)}</span>`).join('')}</div>`;
+        }
     } else {
         renderedContent = escapeHtml(content);
     }
@@ -469,6 +475,7 @@ function appendChatMessage(role, content) {
             ${copyButtonHTML}
             <div class="message-text">${renderedContent}</div>
             ${metadataHTML}
+            ${sourcesHTML}
         </div>
     `;
 
@@ -580,7 +587,22 @@ function getWelcomeHTML() {
     `;
 }
 
+async function loadKbIndicator() {
+    if (!currentUser) return;
+    try {
+        const response = await fetch(`${API_BASE}/knowledge/stats?userId=${currentUser.id}`);
+        const data = await response.json();
+        if (data.data && data.data.documentCount > 0) {
+            document.getElementById('kbIndicator').style.display = '';
+            document.getElementById('kbDocCount').textContent = data.data.documentCount;
+        }
+    } catch (e) {
+        // RAG is optional — silently fail
+    }
+}
+
 window.copyMessage = copyMessage;
+window.loadKbIndicator = loadKbIndicator;
 
 function changeLanguage(lang) {
     responseLanguage = lang;

@@ -26,6 +26,9 @@
             <div class="chat-header-info">
                 <h2 id="chatSubjectTitle">🤖 UPSC AI Mentor</h2>
                 <span class="chat-subject-badge" id="chatSubjectBadge">General</span>
+                <span class="kb-indicator" id="kbIndicator" style="display:none;">
+                    📚 <span id="kbDocCount">0</span> docs indexed
+                </span>
             </div>
             <div class="chat-header-actions">
                 <select id="languageSelect" class="language-select" onchange="changeLanguage(this.value)" title="Response Language">
@@ -87,6 +90,6 @@
 </div>
 <div th:replace="~{fragments/footer :: footer}"></div>
 
-<script th:src="@{/js/chat.js(v='20260608-chat-v5')}"></script>
+<script th:src="@{/js/chat.js(v='20260608-chat-v6')}"></script>
 </body>
 </html>
