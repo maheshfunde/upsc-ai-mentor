@@ -65,4 +65,9 @@ public class DashboardController {
     public String flashcards() {
         return "flashcards";
     }
+
+    @GetMapping("/knowledge")
+    public String knowledgeBase() {
+        return "knowledge";
+    }
 }

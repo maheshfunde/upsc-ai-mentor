@@ -2582,3 +2582,74 @@ textarea:focus,
         text-align: center;
     }
 }
+
+/* ============================================
+   KNOWLEDGE BASE PAGE
+   ============================================ */
+
+.drop-zone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: var(--bg-secondary);
+}
+
+.drop-zone:hover,
+.drop-zone.dragover {
+    border-color: var(--accent);
+    background: var(--accent-light);
+}
+
+.drop-zone p { margin: 8px 0; color: var(--text-secondary); }
+.drop-hint { font-size: 0.8rem; }
+
+.doc-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px; background: var(--bg-input); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); margin-bottom: 8px; transition: all 0.2s;
+}
+.doc-item:hover { border-color: var(--accent); }
+
+.doc-info { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; }
+.doc-icon { font-size: 1.5rem; flex-shrink: 0; }
+.doc-name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.doc-meta { font-size: 0.75rem; color: var(--text-secondary); }
+
+.doc-status {
+    padding: 3px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 600;
+    text-transform: uppercase; flex-shrink: 0; margin-right: 8px;
+}
+.doc-status.READY { background: rgba(34,197,94,0.15); color: var(--success); }
+.doc-status.PROCESSING { background: rgba(245,158,11,0.15); color: var(--warning); }
+.doc-status.FAILED { background: rgba(239,68,68,0.15); color: var(--error); }
+.doc-status.UPLOADING { background: var(--accent-light); color: var(--accent); }
+.doc-status.PARTIAL { background: rgba(249,115,22,0.15); color: #f97316; }
+
+.doc-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.doc-actions button {
+    padding: 4px 10px; background: transparent; border: 1px solid var(--border);
+    border-radius: 6px; color: var(--text-secondary); cursor: pointer; font-size: 0.78rem; transition: all 0.2s;
+}
+.doc-actions button:hover { border-color: var(--error); color: var(--error); }
+.doc-actions button.preview-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.modal-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6); display: flex; align-items: center;
+    justify-content: center; z-index: 100;
+}
+.modal-content {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px; max-width: 700px;
+    width: 90%; max-height: 80vh; overflow-y: auto;
+}
+.modal-content h3 { margin-bottom: 12px; color: var(--accent); }
+.modal-content pre {
+    background: var(--bg-input); padding: 16px; border-radius: var(--radius-sm);
+    white-space: pre-wrap; word-break: break-word; font-size: 0.85rem; line-height: 1.6; max-height: 500px; overflow-y: auto;
+}
+.modal-close { float: right; background: transparent; border: none; color: var(--text-secondary); font-size: 1.2rem; cursor: pointer; }
+.modal-close:hover { color: var(--text-primary); }

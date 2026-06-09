@@ -51,6 +51,11 @@
             <span class="nav-icon">&#129514;</span>
             <span class="nav-label">Flashcards</span>
         </a>
+        <a href="/knowledge" class="nav-item"
+           th:classappend="${activeItem == 'knowledge'} ? ' active' : ''">
+            <span class="nav-icon">&#128214;</span>
+            <span class="nav-label">Knowledge Base</span>
+        </a>
         <a href="/ai-settings" class="nav-item"
            th:classappend="${activeItem == 'aisettings'} ? ' active' : ''">
             <span class="nav-icon">&#9881;</span>

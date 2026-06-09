@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPSC AI Mentor - Knowledge Base</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+</head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/sidebar :: sidebar(activeItem='knowledge')}"></div>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1>📚 Knowledge Base</h1>
+            <p>Upload PDFs, notes, and images. The AI will use your documents to answer questions with source citations.</p>
+        </div>
+
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-card-icon">📄</div>
+                <div class="stat-card-data">
+                    <span class="stat-card-value" id="docCount">0</span>
+                    <span class="stat-card-label">Documents Indexed</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon">🧩</div>
+                <div class="stat-card-data">
+                    <span class="stat-card-value" id="chunkCount">0</span>
+                    <span class="stat-card-label">Knowledge Chunks</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon">💾</div>
+                <div class="stat-card-data">
+                    <span class="stat-card-value" id="storageUsed">0 KB</span>
+                    <span class="stat-card-label">Storage Used</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h2>📤 Upload Documents</h2>
+            <div id="dropZone" class="drop-zone"
+                 ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)"
+                 ondrop="handleDrop(event)" onclick="document.getElementById('fileInput').click()">
+                <p>📁 Drag & drop files here, or <strong>click to browse</strong></p>
+                <p class="drop-hint">PDF, TXT, MD, PNG, JPG — Max 50MB</p>
+            </div>
+            <input type="file" id="fileInput" multiple
+                   accept=".pdf,.txt,.md,.png,.jpg,.jpeg"
+                   onchange="handleFileSelect(event)" style="display:none;">
+            <div id="uploadProgress" style="display:none;">
+                <div class="loading-spinner-small"></div>
+                <p>Uploading and processing...</p>
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h2>📋 Your Documents</h2>
+            <div id="documentList">
+                <p class="analysis-placeholder">Loading documents...</p>
+            </div>
+        </div>
+    </main>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:src="@{/js/knowledge.js(v='20260608-v1')}"></script>
+</body>
+</html>
