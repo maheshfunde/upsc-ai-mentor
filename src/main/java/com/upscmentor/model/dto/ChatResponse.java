@@ -1,6 +1,8 @@
 package com.upscmentor.model.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChatResponse {
 
@@ -10,6 +12,7 @@ public class ChatResponse {
     private LocalDateTime timestamp;
     private boolean success;
     private String error;
+    private List<String> sources;
 
     public static ChatResponse success(String message, String sessionId, String subject) {
         ChatResponse response = new ChatResponse();
@@ -18,6 +21,7 @@ public class ChatResponse {
         response.subject = subject;
         response.timestamp = LocalDateTime.now();
         response.success = true;
+        response.setSources(new ArrayList<>());
         return response;
     }
 
@@ -39,4 +43,6 @@ public class ChatResponse {
     public LocalDateTime getTimestamp() { return timestamp; }
     public boolean isSuccess() { return success; }
     public String getError() { return error; }
+    public List<String> getSources() { return sources; }
+    public void setSources(List<String> sources) { this.sources = sources; }
 }

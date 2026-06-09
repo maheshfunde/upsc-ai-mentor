@@ -82,19 +82,24 @@ public class ChatService {
             saveChatHistory(user.getId(), sessionId,
                     request.getSubject(), "USER", request.getMessage());
 
-            // Call AI model
-            String aiResponse = aiModelRouterService.generate(user, fullPrompt, request.getLocalModelName());
+            // Call AI model with optional RAG context
+            AiModelRouterService.RagResponse ragResponse = aiModelRouterService.generateWithRag(user, fullPrompt, request.getMessage());
+            String aiResponse = ragResponse.getText();
 
             // Save AI response to history
             saveChatHistory(user.getId(), sessionId,
                     request.getSubject(), "ASSISTANT", aiResponse);
+
+            // Attach sources to response if RAG was used
+            ChatResponse chatResponse = ChatResponse.success(aiResponse, sessionId, subjectName);
+            chatResponse.setSources(ragResponse.getSources());
 
             // Update user activity
             userService.updateLastActive(user.getId());
 
             logger.info("Successfully generated response for session: {}", sessionId);
 
-            return ChatResponse.success(aiResponse, sessionId, subjectName);
+            return chatResponse;
 
         } catch (Exception e) {
             String userMessage = classifyChatError(e);
